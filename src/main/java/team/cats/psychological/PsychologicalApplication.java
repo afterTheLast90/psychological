@@ -11,10 +11,7 @@ import org.springframework.context.annotation.Bean;
 @MapperScan("team.cats.psychological.mapper")
 public class PsychologicalApplication {
 
-    @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        return new PaginationInterceptor();
-    }
+
 
     public static void main(String[] args) {
         SpringApplication.run(PsychologicalApplication.class, args);

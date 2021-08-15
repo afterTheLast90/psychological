@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.cats.psychological.mapper.UsersMapper">
+    <select id="selectUserArea" resultType="team.cats.psychological.vo.UsersAndArea">
+        select * from users where    delete_flag= false
+        <if test="value !=null and value != ''">
+            and (user_id like concat('%',#{value},'%') or
+            user_name like concat('%',#{value},'%') or
+            user_account like concat('%',#{value},'%') or
+            user_phone_number like concat('%',#{value},'%'))
+        </if>
+
+        <if test="areaId!=null">
+            and user_id in (select area_principal from area where area_id = #{areaId})
+        </if>
+    </select>
+
+</mapper>

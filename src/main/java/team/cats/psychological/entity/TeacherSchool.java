@@ -33,7 +33,7 @@ public class TeacherSchool implements Serializable,Cloneable {
     /**
      * 删除标记;0否，1是
      */
-    private Long deleteFlag;
+    private Boolean deleteFlag;
     /**
      * 修改时间
      */

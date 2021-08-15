@@ -1,25 +1,20 @@
-package team.cats.psychological.entity;
+package team.cats.psychological.vo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import team.cats.psychological.entity.Area;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
-
-@TableName("users")
 @Data
 @Accessors(chain = true)
-@ApiModel("用户实体类")
-public class Users implements Serializable,Cloneable {
+public class UsersAndArea{
     /**
      * 用户ID
      */
-    @TableId
     private Long userId;
     /**
      * 用户姓名
@@ -50,10 +45,6 @@ public class Users implements Serializable,Cloneable {
      */
     private Long userRole;
     /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
-    /**
      * 删除标记;0否，1是
      */
     private Boolean deleteFlag;
@@ -62,8 +53,7 @@ public class Users implements Serializable,Cloneable {
      * 状态
      */
     private Integer state;
-    /**
-     * 修改时间
-     */
-    private LocalDateTime updateTime;
+
+    private List<Area> areas;
+
 }
