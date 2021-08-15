@@ -34,7 +34,6 @@ public class UsersController {
     @ApiOperation("获取管理员信息")
     public  R<PageResult<UsersAndArea>> getUsers(BasePageParam basePageParam, @RequestParam(value = "areaId",required = false,defaultValue = "")Long areaId,
                                                  @RequestParam(value = "value",required = false,defaultValue = "")String value){
-        System.out.println("safdasfasdfasdfasfafdfasfasfdasff*******************************************");
         return R.success(usersService.getUserList(basePageParam,areaId,value));
     }
 

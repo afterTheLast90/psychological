@@ -16,7 +16,4 @@ public interface UsersMapper extends BaseMapper<Users> {
     //userId,userName,userAccount,userPhoneNumber,areaId
 
     public List<UsersAndArea> selectUserArea(@Param("value") String value,@Param("areaId") Long areaId);
-
-    @Update("update users set delete_flag=1 where user_id=#{userId}")
-    public int updateById(@Param("userId") String userId);
 }
