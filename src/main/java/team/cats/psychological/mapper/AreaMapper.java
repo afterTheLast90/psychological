@@ -10,6 +10,4 @@ import java.util.List;
 
 public interface AreaMapper extends BaseMapper<Area> {
 
-    @Select("select * from area where area_principal = #{userId} ")
-    public List<Area> selectByUserId(@Param("userId") Long userId);
 }
