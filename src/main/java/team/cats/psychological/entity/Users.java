@@ -2,6 +2,8 @@ package team.cats.psychological.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @TableName("users")
 @Data
 @Accessors(chain = true)
+@ApiModel("用户实体类")
 public class Users implements Serializable,Cloneable {
     /**
      * 用户ID
