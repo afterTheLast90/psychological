@@ -1,5 +1,6 @@
 package team.cats.psychological.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -19,7 +20,7 @@ public class Users implements Serializable,Cloneable {
     /**
      * 用户ID
      */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private Long userId;
     /**
      * 用户姓名

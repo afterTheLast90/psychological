@@ -107,7 +107,18 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>1.2.10</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.yitter</groupId>
+            <artifactId>yitter-idgenerator</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>top.wmgx</groupId>
+            <artifactId>MybatisLogPlus</artifactId>
+            <version>1.7</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/MybatisLogPlus-1.7.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>

@@ -4,16 +4,19 @@ spring:
     username: psychological
     password: psychological
 
+
 mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleteFlag
+      logic-delete-value: true
+      logic-not-delete-value: false
+      id-type: assign_id
+
   typeHandlersPackage: com.nh.micro.ext.th
 
 
-  global-config:
-    db-config:
-      id-type: auto
-
-
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: top.wmgx.MybatisLogPlus
 server:
   port: 8081

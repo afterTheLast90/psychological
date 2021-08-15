@@ -1,5 +1,6 @@
 package team.cats.psychological.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class Distribution implements Serializable,Cloneable{
     /** 分发ID */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private Long distributionId ;
     /** 分发类型;0-地区，1-学校，2-老师 */
     private Long distributionType ;

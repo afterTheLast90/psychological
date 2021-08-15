@@ -1,5 +1,6 @@
 package team.cats.psychological.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.nh.micro.ext.ExtBeanWrapper;
@@ -16,7 +17,7 @@ public class Questionnaire implements Serializable,Cloneable {
     /**
      * 问卷ID
      */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private Long questionnaireId;
     /**
      * 问卷名称

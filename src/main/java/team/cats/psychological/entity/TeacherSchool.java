@@ -1,5 +1,6 @@
 package team.cats.psychological.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class TeacherSchool implements Serializable,Cloneable {
     /**
      * ID
      */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private Long teacherSchoolId;
     /**
      * 教师ID

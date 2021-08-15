@@ -1,5 +1,6 @@
 package team.cats.psychological.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class Classes implements Serializable,Cloneable{
     /** 班级ID */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private Long classId ;
     /** 教师ID */
     private Long teacherId ;

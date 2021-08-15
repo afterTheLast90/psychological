@@ -1,5 +1,6 @@
 package team.cats.psychological.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -15,7 +16,7 @@ public class Area implements Serializable,Cloneable {
     /**
      * 地区ID
      */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private Long areaId;
     /**
      * 地区名

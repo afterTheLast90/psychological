@@ -17,7 +17,7 @@ public class UserQuestionnaire implements Serializable,Cloneable {
     /**
      * ID
      */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private Long userQuestionnaireId;
     /**
      * 用户ID
