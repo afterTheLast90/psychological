@@ -1,13 +1,17 @@
 package team.cats.psychological.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nh.micro.ext.ExtBeanWrapper;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @TableName("user_questionnaire")
@@ -32,9 +36,24 @@ public class UserQuestionnaire implements Serializable,Cloneable {
      */
     private Long state;
     /**
-     * 答题详情;总分，题号，选项，变量及对应分数，结果
+     * 总分
      */
-    private ExtBeanWrapper answerDetails;
+    private Double total;
+    /**
+     * 答案
+     */
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<String> answer;
+    /**
+     * 变量
+     */
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<Double> variables;
+    /**
+     * 结果
+     */
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private Result result;
     /**
      * 创建时间
      */

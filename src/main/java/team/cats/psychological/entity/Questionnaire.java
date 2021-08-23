@@ -1,16 +1,19 @@
 package team.cats.psychological.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nh.micro.ext.ExtBeanWrapper;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@TableName("questionnaire")
+@TableName(value = "questionnaire",autoResultMap = true)
 @Data
 @Accessors(chain = true)
 public class Questionnaire implements Serializable,Cloneable {
@@ -30,15 +33,17 @@ public class Questionnaire implements Serializable,Cloneable {
     /**
      * 因子;因子类型，名称，介绍，表达式
      */
-    private ExtBeanWrapper factor;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<Variable> variables;
     /**
      * 计算方式;0-因子，1-总分
      */
-    private Long calculation;
+    private Integer calculation;
     /**
      * 结果;结果内容，结果介绍，判断表达式
      */
-    private ExtBeanWrapper result;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<Result> results;
     /**
      * 问卷状态;0-未发布，1-已发布
      */
@@ -50,7 +55,7 @@ public class Questionnaire implements Serializable,Cloneable {
     /**
      * 创建者
      */
-    private String creator;
+    private Long creator;
     /**
      * 提交人数
      */
@@ -78,5 +83,5 @@ public class Questionnaire implements Serializable,Cloneable {
     /**
      * 题目模板
      */
-    private ExtBeanWrapper topicTemplate;
+    private List<Option> topicTemplate;
 }
