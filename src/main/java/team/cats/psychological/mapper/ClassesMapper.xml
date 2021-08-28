@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.cats.psychological.mapper.ClassesMapper">
+
+    <select id="selectClasses" resultType="team.cats.psychological.vo.ClassesView">
+        select * from classes where delete_flag = false
+        <if test="teacherId != null and teacherId !=''">
+            and teacher_id = #{teacherId}
+        </if>
+        <if test="schoolId != null and schoolId != ''">
+            and school_id = #{schoolId}
+        </if>
+        <if test="value != null and value !=''">
+            and class_name like concat('%',#{value},'%')
+        </if>
+    </select>
+    <select id="selectByStudentId" resultType="team.cats.psychological.vo.ClassesView">
+        select * from classes where delete_flag = false
+            and class_id in (select class_id from students_class where student_id = #{studentId} and delete_flag=false)
+    </select>
+    <select id="selectBySchoolId" resultType="team.cats.psychological.entity.Classes">
+        select * from classes where delete_flag = false
+            and school_id = #{schoolId}
+    </select>
+</mapper>

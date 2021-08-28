@@ -1,19 +1,17 @@
 package team.cats.psychological.vo;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import team.cats.psychological.entity.Area;
+import team.cats.psychological.entity.Classes;
+import team.cats.psychological.entity.School;
+import team.cats.psychological.entity.Users;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Data
 @Accessors(chain = true)
-public class UsersAndArea{
+public class StudentView{
     /**
      * 用户ID
      */
@@ -62,6 +60,8 @@ public class UsersAndArea{
 
     private Integer age;
 
-    private List<Area> areas;
+    private List<ClassesView> classes;
+
+    private List<ParentView> parents;
 
 }

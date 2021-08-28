@@ -23,6 +23,9 @@ public class R<T> {
     public static  <E> R<E> success(E data){
         return new R<E>(200,"成功",data);
     }
+    public static  <E> R<E> successNoShow(E data){
+        return new R<E>(201,"成功",data);
+    }
     public static  R success(){
         return new R(200,"成功");
     }

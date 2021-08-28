@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="team.cats.psychological.mapper.UsersMapper">
     <select id="selectUserArea" resultType="team.cats.psychological.vo.UsersAndArea">
-        select * from users where    delete_flag= false
+        select * from users where   delete_flag= false and user_role=1
         <if test="value !=null and value != ''">
             and (user_id like concat('%',#{value},'%') or
             user_name like concat('%',#{value},'%') or
@@ -14,6 +14,41 @@
 
         <if test="areaId!=null">
             and user_id in (select area_principal from area where area_id = #{areaId})
+        </if>
+    </select>
+
+    <select id="selectTeacher" resultType="team.cats.psychological.vo.Teacher">
+        select * from users where   delete_flag= false and user_role=4
+        <if test="value !=null and value != ''">
+            and (user_id like concat('%',#{value},'%') or
+            user_name like concat('%',#{value},'%') or
+            user_account like concat('%',#{value},'%') or
+            user_phone_number like concat('%',#{value},'%'))
+        </if>
+
+        <if test="schoolId!=null">
+            and user_id in (select teacher_id from teacher_school where school_id = #{schoolId})
+        </if>
+    </select>
+    <select id="selectStudent" resultType="team.cats.psychological.vo.StudentView">
+        select * from users where delete_flag = false and user_role=2
+        <if test="value !=null and value != ''">
+            and (user_id like concat('%',#{value},'%') or
+            user_name like concat('%',#{value},'%') or
+            user_account like concat('%',#{value},'%') or
+            user_phone_number like concat('%',#{value},'%'))
+        </if>
+        <if test="classId!=null">
+            and user_id in (select student_id from students_class where class_id = #{classId})
+        </if>
+    </select>
+    <select id="selectParent" resultType="team.cats.psychological.vo.ParentView">
+        select * from users where delete_flag = false and user_role=3
+        <if test="value !=null and value != ''">
+            and (user_id like concat('%',#{value},'%') or
+            user_name like concat('%',#{value},'%') or
+            user_account like concat('%',#{value},'%') or
+            user_phone_number like concat('%',#{value},'%'))
         </if>
     </select>
 

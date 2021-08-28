@@ -1,22 +1,20 @@
-package team.cats.psychological.entity;
+package team.cats.psychological.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import team.cats.psychological.entity.Area;
+import team.cats.psychological.entity.School;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.List;
 
-@TableName("area")
 @Data
 @Accessors(chain = true)
-public class Area implements Serializable,Cloneable {
+public class AreaAndUser {
     /**
      * 地区ID
      */
-    @TableId(type = IdType.ASSIGN_ID)
     private Long areaId;
     /**
      * 地区名
@@ -43,15 +41,11 @@ public class Area implements Serializable,Cloneable {
      */
     private Long areaPrincipal;
     /**
-     * 创建时间
+     * 用户姓名
      */
-    private LocalDateTime createTime;
+    private String userName;
     /**
-     * 删除标记;0否，1是
+     * 学校
      */
-    private Boolean deleteFlag;
-    /**
-     * 修改时间
-     */
-    private LocalDateTime updateTime;
+    private List<School> school;
 }
