@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.nh.micro.ext.ExtBeanWrapper;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -83,5 +82,6 @@ public class Questionnaire implements Serializable,Cloneable {
     /**
      * 题目模板
      */
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private List<Option> topicTemplate;
 }
