@@ -9,7 +9,9 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 
 @TableName("users")
@@ -34,6 +36,10 @@ public class Users implements Serializable,Cloneable {
      * 密码
      */
     private String userPassword;
+    /**
+     * 出生日期
+     */
+    private LocalDate userBirthday;
     /**
      * 性别;0女，1男，
      */
