@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author lihaotian
@@ -13,27 +12,10 @@ import java.util.Objects;
 @Data
 @Accessors(chain = true)
 public class Result {
-    @Data
-    @Accessors(chain = true)
-    class Condition{
-        /**
-         * 第n个变量
-         */
-        private Integer variable;
-        /**
-         * 类型  0 =
-         *      1 >
-         *      2 <
-         *      3 >=
-         *      4 <=
-         */
-        private Integer type;
-        /**
-         * 值
-         */
-        private Double value;
-    }
-
+    /**
+     * id
+     */
+    private Integer id;
     /**
      * 名称
      */
@@ -53,24 +35,24 @@ public class Result {
     public Boolean check(Double[] values){
         for (Condition condition : conditions) {
             boolean res = true;
-            if (condition.variable>=values.length)
+            if (condition.getVariable()>=values.length)
                 throw new ArrayIndexOutOfBoundsException();
 
-            switch (condition.type){
+            switch (condition.getType()){
                 case 0: //=
-                    res = values[condition.variable] ==condition.value;
+                    res = values[condition.getVariable()] ==condition.getValue();
                     break;
                 case 1: // >
-                    res = values[condition.variable]>condition.value;
+                    res = values[condition.getVariable()]>condition.getValue();
                     break;
                 case 2: //<
-                    res = values[condition.variable]<condition.value;
+                    res = values[condition.getVariable()]<condition.getValue();
                     break;
                 case 3: //>=
-                    res = values[condition.variable]>=condition.value;
+                    res = values[condition.getVariable()]>=condition.getValue();
                     break;
                 case 4: //<=
-                    res = values[condition.variable]<=condition.value;
+                    res = values[condition.getVariable()]<=condition.getValue();
                     break;
             }
             if (!res)

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.yitter.idgen.YitIdHelper;
 import lombok.val;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.BasePageParam;
@@ -248,5 +249,13 @@ public class UsersService {
         if (insert == 0) {
             throw new BaseException(400, "修改失败");
         }
+    }
+
+    /**
+     * 获取用户信息
+     */
+    public Users getUser(Long userId){
+        Users users = usersMapper.selectById(userId);
+        return users;
     }
 }

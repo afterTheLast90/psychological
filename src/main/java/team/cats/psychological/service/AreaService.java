@@ -58,7 +58,7 @@ public class AreaService {
 
     public List<Area> getArea(){
         QueryWrapper<Area> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ge("delete_flag",0);
+        queryWrapper.eq("delete_flag",0);
         List<Area> areas = areaMapper.selectList(queryWrapper);
         return areas;
     }

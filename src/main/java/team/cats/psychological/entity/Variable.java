@@ -12,24 +12,43 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Variable {
     /**
+     * id
+     */
+    private Integer id;
+    /**
      * 名称
      */
     private String name;
     /**
      * 介绍
      */
-    private Integer introduction;
+    private String introduction;
     /**
      * 类型 0 求和 1求平均 2 求个数 3常量 4 表达式
      */
     private Integer type;
     /**
-     * 表达式
-     *  type = 0  experssion 值为 0-因子的个数 0为全部求和 非0为指定因子求和
-     *  type = 1  experssion 值为 0-因子的个数 0为全部求平均 非0为指定因子求平均
-     *  type = 2  experssion 值为 数值/选项（ABCDE） 0-因子的个数 0为全部求个数 非0为指定因子求个数(A的个数，B的个数)
-     *  type = 3  experssion 值为 数值 表示常量
-     *  type = 4  experssion 值为 1+2 1-2 1*2 1/2 分别标识第一个变量加减乘除第二个变量
+     * 因子
      */
-    private String expression;
+    private Integer factor;
+    /**
+     * 选项
+     */
+    private String option;
+    /**
+     * 常量
+     */
+    private Integer constant;
+    /**
+     * 表达式1
+     */
+    private Integer operation1;
+    /**
+     * 运算符
+     */
+    private String operation;
+    /**
+     * 表达式2
+     */
+    private String operation2;
 }

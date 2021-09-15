@@ -16,11 +16,11 @@ public class Option {
      */
     private String optionName;
     /**
-     * 选项内容
-     */
-    private String optionContent;
-    /**
      * 选项分值
      */
     private Integer optionPoints;
+    /**
+     * 选项内容
+     */
+    private String optionContent;
 }

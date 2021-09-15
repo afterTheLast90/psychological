@@ -32,4 +32,11 @@ public class ParentController {
         studentsParentService.insertParent(studentId,userId);
         return R.success();
     }
+
+    @PostMapping("/delParent")
+    @ApiOperation("移除家长")
+    public R delParent(@RequestParam("studentId") Long studentId,@RequestParam("parentId")Long parentId){
+        studentsParentService.delStudentParent(studentId,parentId);
+        return R.success();
+    }
 }

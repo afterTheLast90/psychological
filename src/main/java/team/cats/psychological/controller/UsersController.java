@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
 import team.cats.psychological.base.R;
+import team.cats.psychological.entity.Users;
 import team.cats.psychological.param.UserParams;
 import team.cats.psychological.service.UsersService;
 import team.cats.psychological.vo.UsersAndArea;
@@ -73,5 +74,12 @@ public class UsersController {
     public R disabled(@PathVariable("userId") Long userId) {
         usersService.deleteUser(userId);
         return R.success();
+    }
+
+    @GetMapping("/getUser")
+    @ApiOperation("获取用户信息")
+    public R<Users> getUser(@RequestParam("userId") Long userId){
+        Users user = usersService.getUser(userId);
+        return R.successNoShow(user);
     }
 }

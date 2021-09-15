@@ -19,7 +19,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class QuestionnaireDetails implements Serializable,Cloneable {
     /**
-     * 题目ID
+     * 题目唯一ID
      */
     @TableId(type = IdType.ASSIGN_ID)
     private Long questionId;
@@ -27,6 +27,10 @@ public class QuestionnaireDetails implements Serializable,Cloneable {
      * 问卷ID
      */
     private Long questionnaireId;
+    /**
+     * 题目Id
+     */
+    private Integer titleId;
     /**
      * 题目
      */

@@ -43,7 +43,7 @@ public class UserQuestionnaire implements Serializable,Cloneable {
      * 答案
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> answer;
+    private List<Answer> answer;
     /**
      * 变量
      */
