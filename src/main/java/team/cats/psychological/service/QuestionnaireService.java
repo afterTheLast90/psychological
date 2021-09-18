@@ -1,15 +1,13 @@
 package team.cats.psychological.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.yitter.idgen.YitIdHelper;
 import org.springframework.stereotype.Service;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
 import team.cats.psychological.entity.*;
-import team.cats.psychological.mapper.PublishMapper;
-import team.cats.psychological.mapper.QuestionnaireDetailsMapper;
-import team.cats.psychological.mapper.QuestionnaireMapper;
-import team.cats.psychological.mapper.UsersMapper;
+import team.cats.psychological.mapper.*;
 import team.cats.psychological.param.QuestionnaireParams;
 import team.cats.psychological.vo.QuestionnaireIdAndStudentIdView;
 import team.cats.psychological.vo.QuestionnaireView;
@@ -29,6 +27,8 @@ public class QuestionnaireService {
     private QuestionnaireDetailsMapper questionnaireDetailsMapper;
     @Resource
     private PublishMapper publishMapper;
+    @Resource
+    private UserQuestionnaireMapper userQuestionnaireMapper;
 
     public PageResult<QuestionnaireView> selectQuestionnaire(BasePageParam basePageParam,String value){
         PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
@@ -71,6 +71,19 @@ public class QuestionnaireService {
     public List<QuestionnaireView> getUserQuestionnaire(List<QuestionnaireIdAndStudentIdView> questionnaireIds){
         List<QuestionnaireView> questionnaireViews= new ArrayList<>();
         for (QuestionnaireIdAndStudentIdView questionnaireId : questionnaireIds) {
+            if (questionnaireId.getState()){
+
+                QueryWrapper<UserQuestionnaire> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("questionnaire",questionnaireId.getQuestionnaireId());
+                queryWrapper.eq("user_id",questionnaireId.getStudentId());
+                queryWrapper.eq("publish_id",questionnaireId.getPublishId());
+                List<UserQuestionnaire> userQuestionnaires = userQuestionnaireMapper.selectList(queryWrapper);
+                if (userQuestionnaires.size()!=0){
+                    continue;
+                }
+            }
+
+
             QuestionnaireView questionnaireView = questionnaireMapper.selectUserQuestionnaire(questionnaireId.getQuestionnaireId());
             Publish publish = publishMapper.selectById(questionnaireId.getPublishId());
             questionnaireView.setPublishId(questionnaireId.getPublishId());
