@@ -5,13 +5,13 @@ import com.github.yitter.idgen.YitIdHelper;
 import org.springframework.stereotype.Service;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
-import team.cats.psychological.base.R;
-import team.cats.psychological.entity.Option;
-import team.cats.psychological.entity.Questionnaire;
-import team.cats.psychological.entity.UserQuestionnaire;
+import team.cats.psychological.entity.*;
+import team.cats.psychological.mapper.PublishMapper;
+import team.cats.psychological.mapper.QuestionnaireDetailsMapper;
 import team.cats.psychological.mapper.QuestionnaireMapper;
 import team.cats.psychological.mapper.UsersMapper;
 import team.cats.psychological.param.QuestionnaireParams;
+import team.cats.psychological.vo.QuestionnaireIdAndStudentIdView;
 import team.cats.psychological.vo.QuestionnaireView;
 
 import javax.annotation.Resource;
@@ -25,6 +25,10 @@ public class QuestionnaireService {
     private QuestionnaireMapper questionnaireMapper;
     @Resource
     private UsersMapper usersMapper;
+    @Resource
+    private QuestionnaireDetailsMapper questionnaireDetailsMapper;
+    @Resource
+    private PublishMapper publishMapper;
 
     public PageResult<QuestionnaireView> selectQuestionnaire(BasePageParam basePageParam,String value){
         PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
@@ -44,7 +48,6 @@ public class QuestionnaireService {
         questionnaire.setQuestionnaireName(name);
         questionnaire.setQuestionnaireIntroduction(introduction);
         questionnaire.setCreator(creator);
-        questionnaire.setPublisherId(creator);
         questionnaireMapper.insert(questionnaire);
     }
 
@@ -65,13 +68,56 @@ public class QuestionnaireService {
         questionnaireMapper.updateById(questionnaire);
     }
 
-    public List<QuestionnaireView> getUserQuestionnaire(List<UserQuestionnaire> userQuestionnaires){
+    public List<QuestionnaireView> getUserQuestionnaire(List<QuestionnaireIdAndStudentIdView> questionnaireIds){
         List<QuestionnaireView> questionnaireViews= new ArrayList<>();
-        for (UserQuestionnaire userQuestionnaire : userQuestionnaires) {
-            QuestionnaireView questionnaireView = questionnaireMapper.selectUserQuestionnaire(userQuestionnaire.getQuestionnaire());
+        for (QuestionnaireIdAndStudentIdView questionnaireId : questionnaireIds) {
+            QuestionnaireView questionnaireView = questionnaireMapper.selectUserQuestionnaire(questionnaireId.getQuestionnaireId());
+            Publish publish = publishMapper.selectById(questionnaireId.getPublishId());
+            questionnaireView.setPublishId(questionnaireId.getPublishId());
+            questionnaireView.setPublisherId(publish.getPublisherId());
+            questionnaireView.setPublisherName(usersMapper.selectById(publish.getPublisherId()).getUserName());
+            questionnaireView.setReleaseTime(publish.getReleaseTime());
+            questionnaireView.setDeadLine(publish.getDeadline());
             questionnaireView.setCreatorName(usersMapper.selectById(questionnaireView.getCreator()).getUserName());
+            questionnaireView.setStudentName(usersMapper.selectById(questionnaireId.getStudentId()).getUserName());
+            questionnaireView.setStudentId(questionnaireId.getStudentId());
+            questionnaireView.setState(questionnaireId.getState());
             questionnaireViews.add(questionnaireView);
         }
         return questionnaireViews;
+    }
+
+    public void confirm(Long questionnaireId){
+        boolean student = false;
+        boolean teacher = false;
+        boolean parent = false;
+        List<QuestionnaireDetails> questionnaireDetails = questionnaireDetailsMapper.selectByQuestionnaireId(questionnaireId);
+        for (QuestionnaireDetails questionnaireDetail : questionnaireDetails) {
+            if (questionnaireDetail.getChosePeople() == 0) {
+                student = true;
+            } else if (questionnaireDetail.getChosePeople() == 1) {
+                teacher = true;
+            } else {
+                parent = true;
+            }
+        }
+        Questionnaire questionnaire = questionnaireMapper.selectById(questionnaireId);
+        if (student && teacher && parent) {
+            questionnaire.setChoosePeople(6);//学生教师家长6
+        } else if (parent && teacher) {
+            questionnaire.setChoosePeople(5);//家长教师5
+        } else if (student && teacher) {
+            questionnaire.setChoosePeople(4);//学生教师4
+        } else if (student && parent) {
+            questionnaire.setChoosePeople(3);//学生家长3
+        } else if (teacher) {
+            questionnaire.setChoosePeople(2);//教师2
+        } else if (parent) {
+            questionnaire.setChoosePeople(1);//家长1
+        } else {
+            questionnaire.setChoosePeople(0);//学生0
+        }
+        questionnaire.setQuestionnaireState(1);
+        questionnaireMapper.updateById(questionnaire);
     }
 }

@@ -27,15 +27,16 @@ public class QuestionnaireDetailsService {
     }
 
     public List<QuestionnaireDetails> getUserDetails(Long questionnaireId,Long userId){
-        Long userRole = usersMapper.selectById(userId).getUserRole();
         QueryWrapper<QuestionnaireDetails> queryWrapper = new QueryWrapper();
         queryWrapper.eq("questionnaire_id", questionnaireId);
-        queryWrapper.eq("chose_people", userRole-2);
         List<QuestionnaireDetails> questionnaireDetails = questionnaireDetailsMapper.selectList(queryWrapper);
         return questionnaireDetails;
     }
 
     public void modifyDetails(List<QuestionnaireDetailsParams> questionnaireDetailsList){
+        QueryWrapper<QuestionnaireDetails> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("questionnaire_id", questionnaireDetailsList.get(0).getQuestionnaireId());
+        questionnaireDetailsMapper.delete(queryWrapper);
         for (QuestionnaireDetailsParams questionnaireDetails : questionnaireDetailsList) {
             QuestionnaireDetails questionnaireDetails1 = questionnaireDetailsMapper.selectById(questionnaireDetails.getQuestionId());
             if(questionnaireDetails1==null){
@@ -49,15 +50,6 @@ public class QuestionnaireDetailsService {
                 questionnaireDetails1.setChooseType(questionnaireDetails.getChooseType());
                 questionnaireDetails1.setChosePeople(questionnaireDetails.getChosePeople());
                 questionnaireDetailsMapper.insert(questionnaireDetails1);
-            }else {
-                questionnaireDetails1.setTitleId(questionnaireDetails.getTitleId());
-                questionnaireDetails1.setQuestion(questionnaireDetails.getQuestion());
-                questionnaireDetails1.setQuestionnaireId(questionnaireDetails.getQuestionnaireId());
-                questionnaireDetails1.setFactorGroupId(questionnaireDetails.getFactorGroupId());
-                questionnaireDetails1.setAnswerOptions(questionnaireDetails.getAnswerOptions());
-                questionnaireDetails1.setChooseType(questionnaireDetails.getChooseType());
-                questionnaireDetails1.setChosePeople(questionnaireDetails.getChosePeople());
-                questionnaireDetailsMapper.updateById(questionnaireDetails1);
             }
         }
     }

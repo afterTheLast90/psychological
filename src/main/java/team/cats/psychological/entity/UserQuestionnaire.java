@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.nh.micro.ext.ExtBeanWrapper;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -14,10 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
-@TableName("user_questionnaire")
+@TableName(value = "user_questionnaire",autoResultMap = true)
 @Data
 @Accessors(chain = true)
-public class UserQuestionnaire implements Serializable,Cloneable {
+public class UserQuestionnaire implements Serializable, Cloneable {
     /**
      * ID
      */
@@ -34,7 +33,7 @@ public class UserQuestionnaire implements Serializable,Cloneable {
     /**
      * 状态;0-未完成，1已完成
      */
-    private Long state;
+    private Integer state;
     /**
      * 总分
      */
@@ -110,4 +109,14 @@ public class UserQuestionnaire implements Serializable,Cloneable {
      * 省名
      */
     private String provinceName;
+    /**
+     * 家长Id
+     */
+    private Long parentId;
+    /**
+     * 教师Id
+     */
+    private Long teacherId;
+    private Integer choosePeople;
+    private Long publishId;
 }

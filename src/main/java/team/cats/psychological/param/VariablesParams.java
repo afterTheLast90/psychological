@@ -1,32 +1,33 @@
-package team.cats.psychological.entity;
+package team.cats.psychological.param;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-/**
- * 因子
- * @author lihaotian
- * @since 2021/8/23 15:51
- */
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 @Accessors(chain = true)
-public class Variable {
+public class VariablesParams {
     /**
      * id
      */
+    @NotNull(message = "变量Id不能为空")
     private Integer id;
     /**
      * 名称
      */
+    @NotBlank(message = "变量名称不能为空")
     private String name;
     /**
      * 介绍
      */
+    @NotBlank(message = "变量简介不能为空")
     private String introduction;
     /**
      * 类型 0 求和 1求平均 2 求个数 3常量 4 表达式
      */
+    @NotNull(message = "变量类型不能为空")
     private Integer type;
     /**
      * 因子
@@ -51,5 +52,5 @@ public class Variable {
     /**
      * 表达式2
      */
-    private Integer operation2;
+    private String operation2;
 }

@@ -13,9 +13,11 @@ import team.cats.psychological.mapper.StudentsClassMapper;
 import team.cats.psychological.param.UserParams;
 import team.cats.psychological.service.StudentsClassService;
 import team.cats.psychological.service.UsersService;
+import team.cats.psychological.vo.AllStudentsView;
 import team.cats.psychological.vo.StudentView;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @Api(value = "学生操作相关",tags = "学生操作相关")
@@ -64,5 +66,12 @@ public class StudentsController {
     public R modifyTeacher(@Validated @RequestBody UserParams userParams){
         usersService.modifyAdministrator(userParams);
         return R.success();
+    }
+
+    @GetMapping("getStudents")
+    @ApiOperation("获取所有学生")
+    public R<List<AllStudentsView>> getStudents(@RequestParam("classId") Long  classId){
+        List<AllStudentsView> students = studentsClassService.getStudents(classId);
+        return R.success(students);
     }
 }

@@ -28,7 +28,7 @@ public class ParentController {
     @PostMapping("/addParent")
     @ApiOperation("添加家长")
     public R addTeacher(@Validated @RequestBody UserParams userParams, @RequestParam("studentId") Long studentId){
-        Long userId = usersService.InsertUser(userParams, 4L);
+        Long userId = usersService.InsertUser(userParams, 3L);
         studentsParentService.insertParent(studentId,userId);
         return R.success();
     }

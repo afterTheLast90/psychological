@@ -1,5 +1,7 @@
 package team.cats.psychological.entity;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -10,11 +12,14 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-@TableName(value = "questionnaire",autoResultMap = true)
 @Data
 @Accessors(chain = true)
+@TableName(value = "questionnaire",autoResultMap = true)
 public class Questionnaire implements Serializable,Cloneable {
     /**
      * 问卷ID
@@ -46,27 +51,11 @@ public class Questionnaire implements Serializable,Cloneable {
     /**
      * 问卷状态;0-未发布，1-已发布
      */
-    private Long questionnaireState;
-    /**
-     * 发布人ID
-     */
-    private Long publisherId;
+    private Integer questionnaireState;
     /**
      * 创建者
      */
     private Long creator;
-    /**
-     * 提交人数
-     */
-    private Long submissionNumber;
-    /**
-     * 发布时间
-     */
-    private LocalDateTime releaseTime;
-    /**
-     * 截止时间
-     */
-    private LocalDateTime deadline;
     /**
      * 创建时间
      */
@@ -84,4 +73,38 @@ public class Questionnaire implements Serializable,Cloneable {
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<Option> topicTemplate;
+    /**
+     * 答题人
+     */
+    private Integer choosePeople;
+
+
+    public void setVariables(List variables) {
+        if (variables.size()==0){
+            this.variables = variables;
+            return;
+        }
+        if (variables.get(0) instanceof Map){
+            this.variables = ((List<Map>)variables).stream().map(i-> BeanUtil.fillBeanWithMap(i,new Variable(),true)).collect(Collectors.toList());
+            return;
+        }
+        if (variables.get(0) instanceof Variable){
+            this.variables = variables;
+        }
+
+    }
+    public void setResults(List results) {
+        if (results.size()==0){
+            this.results = results;
+            return;
+        }
+        if (results.get(0) instanceof Map){
+            this.results = ((List<Map>)results).stream().map(i-> BeanUtil.fillBeanWithMap(i,new Result(),true)).collect(Collectors.toList());
+            return;
+        }
+        if (results.get(0) instanceof Result){
+            this.results = results;
+        }
+
+    }
 }
