@@ -12,6 +12,7 @@ import team.cats.psychological.entity.StudentsClass;
 import team.cats.psychological.mapper.StudentsClassMapper;
 import team.cats.psychological.param.UserParams;
 import team.cats.psychological.service.StudentsClassService;
+import team.cats.psychological.service.StudentsParentService;
 import team.cats.psychological.service.UsersService;
 import team.cats.psychological.vo.AllStudentsView;
 import team.cats.psychological.vo.StudentView;
@@ -28,6 +29,8 @@ public class StudentsController {
 
     @Resource
     private StudentsClassService studentsClassService;
+    @Resource
+    private StudentsParentService studentsParentService;
 
     @GetMapping("/getStudentList")
     @ApiOperation("获取学生信息")
@@ -38,12 +41,16 @@ public class StudentsController {
 
     @PostMapping("/addStudent")
     @ApiOperation("添加学生")
-    public R addTeacher(@Validated @RequestBody UserParams userParams, @RequestParam("classId") Long classId){
+    public R addTeacher(@Validated @RequestBody UserParams userParams, @RequestParam("classId") Long classId,@RequestParam("parentId")Long parentId){
         if(classId==null){
-            throw new BaseException(400,"classId不能为空");
+            throw new BaseException(400,"class不能为空");
+        }
+        if(parentId==null){
+            throw new BaseException(400,"parent不能为空");
         }
         Long userId = usersService.InsertUser(userParams, 2L);
         studentsClassService.insertStudentClass(userId,classId);
+        studentsParentService.insertParent(userId,parentId);
         return R.success();
     }
 

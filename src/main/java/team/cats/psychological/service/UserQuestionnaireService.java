@@ -1,15 +1,16 @@
 package team.cats.psychological.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageHelper;
 import com.github.yitter.idgen.YitIdHelper;
 import org.springframework.stereotype.Service;
+import team.cats.psychological.base.BasePageParam;
+import team.cats.psychological.base.PageResult;
 import team.cats.psychological.entity.StudentsParent;
 import team.cats.psychological.entity.Users;
 import team.cats.psychological.entity.*;
 import team.cats.psychological.mapper.*;
-import team.cats.psychological.vo.AnswerQuestionnaireView;
-import team.cats.psychological.vo.NewAnswerQuestionnaireView;
-import team.cats.psychological.vo.QuestionnaireIdAndStudentIdView;
+import team.cats.psychological.vo.*;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -67,42 +68,6 @@ public class UserQuestionnaireService {
         publish.setDeadline(deadLine);
         publish.setPublisherId(userId);
         publishMapper.insert(publish);
-//        School school = schoolMapper.selectById(schoolId);
-//        Area area = areaMapper.selectById(school.getAreaId());
-//        Classes classes = classesMapper.selectById(classId);
-//        QueryWrapper<StudentsClass> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq("class_id", classId);
-//        List<StudentsClass> studentsClasses = studentsClassMapper.selectList(queryWrapper);
-//        for (StudentsClass studentsClass : studentsClasses) {
-//            UserQuestionnaire userQuestionnaire = new UserQuestionnaire();
-//            userQuestionnaire.setUserQuestionnaireId(YitIdHelper.nextId());
-//            userQuestionnaire.setUserId(studentsClass.getStudentId());
-//            userQuestionnaire.setQuestionnaire(questionnaireId);
-//            userQuestionnaire.setState(0);
-//            userQuestionnaire.setSchoolId(school.getSchoolId());
-//            userQuestionnaire.setSchoolName(school.getSchoolName());
-//            userQuestionnaire.setGrade(classes.getGrade());
-//            userQuestionnaire.setAreaId(area.getAreaId());
-//            userQuestionnaire.setClassId(classes.getClassId());
-//            userQuestionnaire.setClassName(classes.getClassName());
-//            userQuestionnaire.setCityId(area.getCityId());
-//            userQuestionnaire.setCityName(area.getCityName());
-//            userQuestionnaire.setProvinceId(area.getProvinceId());
-//            userQuestionnaire.setProvinceName(area.getProvinceName());
-//            userQuestionnaire.setAreaName(area.getAreaName());
-//            userQuestionnaire.setTeacherId(classes.getTeacherId());
-//            userQuestionnaire.setChoosePeople(questionnaire1.getChoosePeople());
-//            List<ParentView> parentViews = studentsParentMapper.selectByStudentId(studentsClass.getStudentId());
-//            for (ParentView parentView : parentViews) {
-//                userQuestionnaire.setParentId(parentView.getParentId());
-//            }
-//            userQuestionnaireMapper.insert(userQuestionnaire);
-//        }
-//        Questionnaire questionnaire = questionnaireMapper.selectById(questionnaireId);
-//        questionnaire.setQuestionnaireState(1L);
-//        questionnaire.setReleaseTime(releaseTime);
-//        questionnaire.setDeadline(deadLine);
-//        questionnaireMapper.updateById(questionnaire);
     }
 
     public List<QuestionnaireIdAndStudentIdView> selectByUserId(Long userId) {
@@ -112,10 +77,6 @@ public class UserQuestionnaireService {
         List<Long> schoolId = new ArrayList<>();
         List<Long> areaId = new ArrayList<>();
         if (users.getUserRole() == 2) {
-            QueryWrapper<StudentsClass> studentsQueryWrapper = new QueryWrapper<>();
-            studentsQueryWrapper.eq("student_id", userId);
-            StudentsClass studentsClass = studentsClassMapper.selectOne(studentsQueryWrapper);
-
 //拿到发给学生个人的问卷
             QueryWrapper<Publish> publishQueryWrapperStudent = new QueryWrapper<>();
             publishQueryWrapperStudent.eq("strange_id", userId);
@@ -131,66 +92,66 @@ public class UserQuestionnaireService {
                 questionnaireIds.add(questionnaireIdAndStudentIdView);
             }
 //发给班级的问卷
-            QueryWrapper<Publish> publishQueryWrapperClass = new QueryWrapper<>();
-            publishQueryWrapperClass.eq("strange_id", studentsClass.getClassId());
-            publishQueryWrapperClass.eq("publish_type", 2);
-            publishQueryWrapperClass.in("choose_people", new Integer[]{0, 3, 4, 6});
-            List<Publish> publishes1 = publishMapper.selectList(publishQueryWrapperClass);
-            for (Publish publish : publishes1) {
-                QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
-                questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
-                questionnaireIdAndStudentIdView.setStudentId(userId);
-                ;
-                questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
-                questionnaireIdAndStudentIdView.setState(true);
-                questionnaireIds.add(questionnaireIdAndStudentIdView);
+
+            QueryWrapper<StudentsClass> studentsQueryWrapper = new QueryWrapper<>();
+            studentsQueryWrapper.eq("student_id", userId);
+            List<StudentsClass> studentsClasses = studentsClassMapper.selectList(studentsQueryWrapper);
+            for (StudentsClass studentsClass : studentsClasses) {
+                QueryWrapper<Publish> publishQueryWrapperClass = new QueryWrapper<>();
+                publishQueryWrapperClass.eq("strange_id", studentsClass.getClassId());
+                publishQueryWrapperClass.eq("publish_type", 2);
+                publishQueryWrapperClass.in("choose_people", new Integer[]{0, 3, 4, 6});
+                List<Publish> publishes1 = publishMapper.selectList(publishQueryWrapperClass);
+                for (Publish publish : publishes1) {
+                    QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
+                    questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
+                    questionnaireIdAndStudentIdView.setStudentId(userId);
+                    ;
+                    questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
+                    questionnaireIdAndStudentIdView.setState(true);
+                    questionnaireIds.add(questionnaireIdAndStudentIdView);
+                }
+                Classes classes = classesMapper.selectById(studentsClass.getClassId());
+                schoolId.add(classes.getSchoolId());
+                //发给学校的问卷
+                QueryWrapper<Publish> publishQueryWrapperSchool = new QueryWrapper<>();
+                publishQueryWrapperSchool.eq("strange_id", classes.getSchoolId());
+                publishQueryWrapperSchool.eq("publish_type", 1);
+                publishQueryWrapperSchool.in("choose_people", new Integer[]{0, 3, 4, 6});
+                List<Publish> publishes2 = publishMapper.selectList(publishQueryWrapperSchool);
+                for (Publish publish : publishes2) {
+                    QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
+                    questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
+                    questionnaireIdAndStudentIdView.setStudentId(userId);
+                    ;
+                    questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
+                    questionnaireIdAndStudentIdView.setState(true);
+                    questionnaireIds.add(questionnaireIdAndStudentIdView);
+                }
+
+                School school = schoolMapper.selectById(classes.getSchoolId());
+
+                //发给地区的问卷
+                QueryWrapper<Publish> publishQueryWrapperArea = new QueryWrapper<>();
+                publishQueryWrapperArea.eq("strange_id", school.getAreaId());
+                publishQueryWrapperArea.eq("publish_type", 0);
+                publishQueryWrapperArea.in("choose_people", new Integer[]{0, 3, 4, 6});
+                List<Publish> publishes3 = publishMapper.selectList(publishQueryWrapperArea);
+                for (Publish publish : publishes3) {
+                    QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
+                    questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
+                    questionnaireIdAndStudentIdView.setStudentId(userId);
+                    ;
+                    questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
+                    questionnaireIdAndStudentIdView.setState(true);
+                    questionnaireIds.add(questionnaireIdAndStudentIdView);
+                }
             }
-
-            Classes classes = classesMapper.selectById(studentsClass.getClassId());
-            schoolId.add(classes.getSchoolId());
-            //发给学校的问卷
-            QueryWrapper<Publish> publishQueryWrapperSchool = new QueryWrapper<>();
-            publishQueryWrapperSchool.eq("strange_id", classes.getSchoolId());
-            publishQueryWrapperSchool.eq("publish_type", 1);
-            publishQueryWrapperSchool.in("choose_people", new Integer[]{0, 3, 4, 6});
-            List<Publish> publishes2 = publishMapper.selectList(publishQueryWrapperSchool);
-            for (Publish publish : publishes2) {
-                QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
-                questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
-                questionnaireIdAndStudentIdView.setStudentId(userId);
-                ;
-                questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
-                questionnaireIdAndStudentIdView.setState(true);
-                questionnaireIds.add(questionnaireIdAndStudentIdView);
-            }
-
-            School school = schoolMapper.selectById(classes.getSchoolId());
-
-            //发给地区的问卷
-            QueryWrapper<Publish> publishQueryWrapperArea = new QueryWrapper<>();
-            publishQueryWrapperArea.eq("strange_id", school.getAreaId());
-            publishQueryWrapperArea.eq("publish_type", 0);
-            publishQueryWrapperArea.in("choose_people", new Integer[]{0, 3, 4, 6});
-            List<Publish> publishes3 = publishMapper.selectList(publishQueryWrapperArea);
-            for (Publish publish : publishes3) {
-                QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
-                questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
-                questionnaireIdAndStudentIdView.setStudentId(userId);
-                ;
-                questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
-                questionnaireIdAndStudentIdView.setState(true);
-                questionnaireIds.add(questionnaireIdAndStudentIdView);
-            }
-
-
         } else if (users.getUserRole() == 3) {
             QueryWrapper<StudentsParent> parentQueryWrapper = new QueryWrapper<>();
             parentQueryWrapper.eq("parent_id", userId);
             List<StudentsParent> studentsParents = studentsParentMapper.selectList(parentQueryWrapper);
             for (StudentsParent studentsParent : studentsParents) {
-                QueryWrapper<StudentsClass> studentsQueryWrapper = new QueryWrapper<>();
-                studentsQueryWrapper.eq("student_id", studentsParent.getStudentId());
-                StudentsClass studentsClass = studentsClassMapper.selectOne(studentsQueryWrapper);
                 //发给学生个人的问卷
                 QueryWrapper<Publish> publishQueryWrapper = new QueryWrapper<>();
                 publishQueryWrapper.eq("strange_id", studentsParent.getStudentId());
@@ -207,59 +168,65 @@ public class UserQuestionnaireService {
                     questionnaireIds.add(questionnaireIdAndStudentIdView);
                 }
 
-                classId.add(studentsClass.getClassId());
-                //发给班级的问卷
-                QueryWrapper<Publish> publishQueryWrapperClass = new QueryWrapper<>();
-                publishQueryWrapperClass.eq("strange_id", studentsClass.getClassId());
-                publishQueryWrapperClass.eq("publish_type", 2);
-                publishQueryWrapperClass.in("choose_people", new Integer[]{1, 5});
-                List<Publish> publishes1 = publishMapper.selectList(publishQueryWrapperClass);
-                for (Publish publish : publishes1) {
-                    QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
-                    questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
-                    questionnaireIdAndStudentIdView.setStudentId(studentsParent.getStudentId());
-                    ;
-                    questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
-                    questionnaireIdAndStudentIdView.setState(true);
-                    questionnaireIds.add(questionnaireIdAndStudentIdView);
+                QueryWrapper<StudentsClass> studentsQueryWrapper = new QueryWrapper<>();
+                studentsQueryWrapper.eq("student_id", studentsParent.getStudentId());
+                List<StudentsClass> studentsClasses = studentsClassMapper.selectList(studentsQueryWrapper);
+                for (StudentsClass studentsClass : studentsClasses) {
+                    classId.add(studentsClass.getClassId());
+                    //发给班级的问卷
+                    QueryWrapper<Publish> publishQueryWrapperClass = new QueryWrapper<>();
+                    publishQueryWrapperClass.eq("strange_id", studentsClass.getClassId());
+                    publishQueryWrapperClass.eq("publish_type", 2);
+                    publishQueryWrapperClass.in("choose_people", new Integer[]{1, 5});
+                    List<Publish> publishes1 = publishMapper.selectList(publishQueryWrapperClass);
+                    for (Publish publish : publishes1) {
+                        QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
+                        questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
+                        questionnaireIdAndStudentIdView.setStudentId(studentsParent.getStudentId());
+                        ;
+                        questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
+                        questionnaireIdAndStudentIdView.setState(true);
+                        questionnaireIds.add(questionnaireIdAndStudentIdView);
+                    }
+
+                    Classes classes = classesMapper.selectById(studentsClass.getClassId());
+                    schoolId.add(classes.getSchoolId());
+
+                    //发给学校的问卷
+                    QueryWrapper<Publish> publishQueryWrapperSchool = new QueryWrapper<>();
+                    publishQueryWrapperSchool.eq("strange_id", classes.getSchoolId());
+                    publishQueryWrapperSchool.eq("publish_type", 1);
+                    publishQueryWrapperSchool.in("choose_people", new Integer[]{1, 5});
+                    List<Publish> publishes2 = publishMapper.selectList(publishQueryWrapperSchool);
+                    for (Publish publish : publishes2) {
+                        QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
+                        questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
+                        questionnaireIdAndStudentIdView.setStudentId(studentsParent.getStudentId());
+                        ;
+                        questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
+                        questionnaireIdAndStudentIdView.setState(true);
+                        questionnaireIds.add(questionnaireIdAndStudentIdView);
+                    }
+
+                    School school = schoolMapper.selectById(classes.getSchoolId());
+                    areaId.add(school.getAreaId());
+                    //发给地区的问卷
+                    QueryWrapper<Publish> publishQueryWrapperArea = new QueryWrapper<>();
+                    publishQueryWrapperArea.eq("strange_id", school.getAreaId());
+                    publishQueryWrapperArea.eq("publish_type", 0);
+                    publishQueryWrapperArea.in("choose_people", new Integer[]{1, 5});
+                    List<Publish> publishes3 = publishMapper.selectList(publishQueryWrapperArea);
+                    for (Publish publish : publishes3) {
+                        QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
+                        questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
+                        questionnaireIdAndStudentIdView.setStudentId(studentsParent.getStudentId());
+                        ;
+                        questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
+                        questionnaireIdAndStudentIdView.setState(true);
+                        questionnaireIds.add(questionnaireIdAndStudentIdView);
+                    }
                 }
 
-                Classes classes = classesMapper.selectById(studentsClass.getClassId());
-                schoolId.add(classes.getSchoolId());
-
-                //发给学校的问卷
-                QueryWrapper<Publish> publishQueryWrapperSchool = new QueryWrapper<>();
-                publishQueryWrapperSchool.eq("strange_id", classes.getSchoolId());
-                publishQueryWrapperSchool.eq("publish_type", 1);
-                publishQueryWrapperSchool.in("choose_people", new Integer[]{1, 5});
-                List<Publish> publishes2 = publishMapper.selectList(publishQueryWrapperSchool);
-                for (Publish publish : publishes2) {
-                    QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
-                    questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
-                    questionnaireIdAndStudentIdView.setStudentId(studentsParent.getStudentId());
-                    ;
-                    questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
-                    questionnaireIdAndStudentIdView.setState(true);
-                    questionnaireIds.add(questionnaireIdAndStudentIdView);
-                }
-
-                School school = schoolMapper.selectById(classes.getSchoolId());
-                areaId.add(school.getAreaId());
-                //发给地区的问卷
-                QueryWrapper<Publish> publishQueryWrapperArea = new QueryWrapper<>();
-                publishQueryWrapperArea.eq("strange_id", school.getAreaId());
-                publishQueryWrapperArea.eq("publish_type", 0);
-                publishQueryWrapperArea.in("choose_people", new Integer[]{1, 5});
-                List<Publish> publishes3 = publishMapper.selectList(publishQueryWrapperArea);
-                for (Publish publish : publishes3) {
-                    QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
-                    questionnaireIdAndStudentIdView.setQuestionnaireId(publish.getQuestionnaireId());
-                    questionnaireIdAndStudentIdView.setStudentId(studentsParent.getStudentId());
-                    ;
-                    questionnaireIdAndStudentIdView.setPublishId(publish.getPublishId());
-                    questionnaireIdAndStudentIdView.setState(true);
-                    questionnaireIds.add(questionnaireIdAndStudentIdView);
-                }
             }
         } else if (users.getUserRole() == 4) {
             QueryWrapper<Classes> classesQueryWrapper = new QueryWrapper<>();
@@ -355,7 +322,7 @@ public class UserQuestionnaireService {
             queryWrapper.eq("state", 2);
             queryWrapper.in("choose_people", new Integer[]{2, 4, 5, 6});
         }
-        if (users.getUserRole()!=2){
+        if (users.getUserRole() != 2) {
             List<UserQuestionnaire> userQuestionnaires = userQuestionnaireMapper.selectList(queryWrapper);
             for (
                     UserQuestionnaire userQuestionnaire : userQuestionnaires) {
@@ -464,7 +431,14 @@ public class UserQuestionnaireService {
                 break;
             }
         }
-        userQuestionnaire.setVariables(variablesAnswer);
+        List<Number> numbers=new ArrayList<>();
+        for (Double aDouble : variablesAnswer) {
+            numbers.add(aDouble);
+        }
+        userQuestionnaire.setVariables(numbers);
+        Publish publish = publishMapper.selectById(userQuestionnaire.getPublishId());
+        publish.setSubmissionNumber(publish.getSubmissionNumber()+1);
+        publishMapper.updateById(publish);
         userQuestionnaireMapper.updateById(userQuestionnaire);
 
     }
@@ -609,8 +583,15 @@ public class UserQuestionnaireService {
                 break;
             }
         }
-        userQuestionnaire.setVariables(variablesAnswer);
-        System.out.println("11111111111111111111111111111111111111111111111111111111111111111111111111111111");
+        List<Number> numbers=new ArrayList<>();
+        for (Double aDouble : variablesAnswer) {
+            numbers.add(aDouble);
+        }
+        userQuestionnaire.setVariables(numbers);
+
+        Publish publish = publishMapper.selectById(userQuestionnaire.getPublishId());
+        publish.setSubmissionNumber(publish.getSubmissionNumber()+1);
+        publishMapper.updateById(publish);
         userQuestionnaireMapper.insert(userQuestionnaire);
     }
 
@@ -619,5 +600,46 @@ public class UserQuestionnaireService {
         queryWrapper.eq("user_id", userId);
         queryWrapper.eq("questionnaire", questionnaireId);
         return userQuestionnaireMapper.selectOne(queryWrapper);
+    }
+
+    public PageResult<QuestionnaireResultView> getQuestionnaireResult(BasePageParam basePageParam, Long userId) {
+        PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
+        Users users = usersMapper.selectById(userId);
+        Long userRole = users.getUserRole();
+        List<UserQuestionnaire> userQuestionnaires = new ArrayList<>();
+        if (userRole == 2) {
+            QueryWrapper<UserQuestionnaire> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("user_id", userId);
+            queryWrapper.eq("state", 3);
+            queryWrapper.orderByDesc("create_time");
+            userQuestionnaires = userQuestionnaireMapper.selectList(queryWrapper);
+        } else if (userRole == 3) {
+            QueryWrapper<UserQuestionnaire> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("parent_id", userId);
+            queryWrapper.eq("state", 3);
+            queryWrapper.orderByDesc("create_time");
+            userQuestionnaires = userQuestionnaireMapper.selectList(queryWrapper);
+        } else if (userRole == 4) {
+            QueryWrapper<UserQuestionnaire> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("teacher_id", userId);
+            queryWrapper.eq("state", 3);
+            queryWrapper.orderByDesc("create_time");
+            userQuestionnaires = userQuestionnaireMapper.selectList(queryWrapper);
+        }
+        List<QuestionnaireResultView> questionnaireResultViews = new ArrayList<>();
+        for (UserQuestionnaire userQuestionnaire : userQuestionnaires) {
+            QuestionnaireResultView questionnaireResultView = new QuestionnaireResultView();
+            questionnaireResultView.setUserQuestionnaire(userQuestionnaire);
+            Publish publish = publishMapper.selectById(userQuestionnaire.getPublishId());
+            questionnaireResultView.setPublisherName(usersMapper.selectById(publish.getPublisherId()).getUserName());
+            questionnaireResultView.setQuestionnaireName(questionnaireMapper.selectById(userQuestionnaire.getQuestionnaire()).getQuestionnaireName());
+            questionnaireResultViews.add(questionnaireResultView);
+        }
+        return  new PageResult<QuestionnaireResultView>(questionnaireResultViews);
+    }
+
+    public UserQuestionnaire getLastResult(Long userQuestionnaireId){
+        UserQuestionnaire userQuestionnaire = userQuestionnaireMapper.selectById(userQuestionnaireId);
+        return userQuestionnaire;
     }
 }

@@ -47,7 +47,7 @@ public class UserQuestionnaire implements Serializable, Cloneable {
      * 变量
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<Double> variables;
+    private List<Number> variables;
     /**
      * 结果
      */
