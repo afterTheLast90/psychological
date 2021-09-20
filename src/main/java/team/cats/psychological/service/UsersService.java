@@ -7,12 +7,14 @@ import com.github.yitter.idgen.YitIdHelper;
 import lombok.val;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
 import team.cats.psychological.entity.*;
 import team.cats.psychological.entity.StudentsParent;
 import team.cats.psychological.mapper.*;
+import team.cats.psychological.param.RegisterParams;
 import team.cats.psychological.param.UserParams;
 import team.cats.psychological.vo.*;
 
@@ -45,8 +47,70 @@ public class UsersService {
         List<Users> users = usersMapper.selectList(queryWrapper);
         return users;
     }
+    public Users getUserByPhone(String phone){
+        QueryWrapper<Users> queryWrapper = new QueryWrapper();
+        queryWrapper.lambda().eq(Users::getUserPhoneNumber,phone);
+        return usersMapper.selectOne(queryWrapper);
 
+    }
+    public Users getUserByPhoneOrAccount(String phone){
+        QueryWrapper<Users> queryWrapper = new QueryWrapper();
+        queryWrapper.lambda().eq(Users::getUserPhoneNumber,phone).or().eq(Users::getUserAccount,phone);
+        return usersMapper.selectOne(queryWrapper);
 
+    }
+
+    @Transactional
+    public void register(RegisterParams registerParams){
+        Users userByPhoneOrAccount = this.getUserByPhoneOrAccount(registerParams.getAccount());
+        if (userByPhoneOrAccount!=null) {
+            throw new BaseException("账号已存在");
+        }
+
+        Users student = new Users();
+        student.setUserAccount(registerParams.getAccount());
+        student.setUserPassword(registerParams.getPassword());
+        student.setUserName(registerParams.getUserName());
+        student.setState(0);
+        student.setUserGender(registerParams.getUserGender().longValue());
+        student.setDeleteFlag(false);
+        student.setUserBirthday(student.getUserBirthday());
+        student.setUserRole(2L);
+        student.setUserPhoneNumber("");
+        usersMapper.insert(student);
+        Users parent = this.getUserByPhone(registerParams.getParentPhone());
+        if (parent!=null){
+            if (!parent.getUserRole().equals(3L)){
+                throw new BaseException("家长手机号身份错误，请更换手机号");
+            }
+            if(!parent.getUserName().equals(registerParams.getUserName())){
+                throw new BaseException("家长姓名不匹配，请检查");
+            }
+        }else{
+            parent = new Users();
+            parent.setUserAccount(registerParams.getParentPhone());
+            parent.setUserPassword(registerParams.getPassword());
+            parent.setUserName(registerParams.getParentName());
+            parent.setState(0);
+            parent.setUserGender(registerParams.getUserGender().longValue());
+            parent.setDeleteFlag(false);
+            parent.setUserBirthday(student.getUserBirthday());
+            parent.setUserRole(3L);
+            parent.setUserPhoneNumber(registerParams.getParentPhone());
+            usersMapper.insert(parent);
+        }
+
+        StudentsParent studentsParent = new StudentsParent();
+        studentsParent.setParentId(parent.getUserId());
+        studentsParent.setStudentId(student.getUserId());
+        studentsParentMapper.insert(studentsParent);
+
+        StudentsClass studentsClass =new StudentsClass();
+        studentsClass.setStudentId(student.getUserId());
+        studentsClass.setClassId(registerParams.getClassId());
+        studentsClassMapper.insert(studentsClass);
+
+    }
     /**
      * 获取userList带地区
      *
