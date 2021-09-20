@@ -6,12 +6,14 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
 import team.cats.psychological.base.R;
 import team.cats.psychological.entity.Users;
 import team.cats.psychological.param.UserParams;
 import team.cats.psychological.service.UsersService;
+import team.cats.psychological.vo.UserInformationView;
 import team.cats.psychological.vo.UsersAndArea;
 
 import javax.annotation.Resource;
@@ -60,6 +62,12 @@ public class UsersController {
     @ApiOperation("修改管理状态")
     @PostMapping("/changeUserState/{userId}")
     public R disabled(@PathVariable("userId") Long userId, @RequestParam(value = "state") Boolean state) {
+        if (userId==null){
+            throw new BaseException(400,"用户不能为空");
+        }
+        if (state==null){
+            throw new BaseException(400,"状态不能为空");
+        }
         usersService.changeUserState(userId, state);
         return R.success();
     }
@@ -78,8 +86,8 @@ public class UsersController {
 
     @GetMapping("/getUser")
     @ApiOperation("获取用户信息")
-    public R<Users> getUser(@RequestParam("userId") Long userId){
-        Users user = usersService.getUser(userId);
+    public R<UserInformationView> getUser(){
+        UserInformationView user = usersService.getUser();
         return R.successNoShow(user);
     }
 }

@@ -1,5 +1,6 @@
 package team.cats.psychological.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.yitter.idgen.YitIdHelper;
@@ -70,7 +71,8 @@ public class UserQuestionnaireService {
         publishMapper.insert(publish);
     }
 
-    public List<QuestionnaireIdAndStudentIdView> selectByUserId(Long userId) {
+    public List<QuestionnaireIdAndStudentIdView> selectByUserId() {
+        long userId = StpUtil.getLoginIdAsLong();
         Users users = usersMapper.selectById(userId);
         List<QuestionnaireIdAndStudentIdView> questionnaireIds = new ArrayList<>();
         List<Long> classId = new ArrayList<>();

@@ -57,6 +57,12 @@ public class StudentsController {
     @PostMapping("/addClass")
     @ApiOperation("加入班级")
     public R addClass(@RequestParam("classId") Long classId,@RequestParam("studentId")Long studentId){
+        if (classId==null){
+            throw new BaseException(400,"class不能为空");
+        }
+        if (studentId==null){
+            throw new BaseException(400,"student不能为空");
+        }
         studentsClassService.insertStudentClass(studentId,classId);
         return R.success();
     }
@@ -64,6 +70,12 @@ public class StudentsController {
     @PostMapping("/deleteClass")
     @ApiOperation("退出班级")
     public R delClass(@RequestParam("classId") Long classId,@RequestParam("studentId")Long studentId){
+        if (classId==null){
+            throw new BaseException(400,"class不能为空");
+        }
+        if (studentId==null){
+            throw new BaseException(400,"student不能为空");
+        }
         studentsClassService.delStudentClass(studentId,classId);
         return R.success();
     }

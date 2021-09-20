@@ -1,5 +1,6 @@
 package team.cats.psychological.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;

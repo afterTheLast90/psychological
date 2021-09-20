@@ -82,8 +82,6 @@ public class QuestionnaireService {
                     continue;
                 }
             }
-
-
             QuestionnaireView questionnaireView = questionnaireMapper.selectUserQuestionnaire(questionnaireId.getQuestionnaireId());
             Publish publish = publishMapper.selectById(questionnaireId.getPublishId());
             questionnaireView.setPublishId(questionnaireId.getPublishId());

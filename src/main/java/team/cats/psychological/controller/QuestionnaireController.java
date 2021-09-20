@@ -65,8 +65,8 @@ public class QuestionnaireController {
 
     @GetMapping("getUserQuestionnaire")
     @ApiOperation("获取用户问卷")
-    public R<List<QuestionnaireView>> getUserQuestionnaire(@RequestParam("userId") Long userId){
-        List<QuestionnaireIdAndStudentIdView> questionnaireIds = userQuestionnaireService.selectByUserId(userId);
+    public R<List<QuestionnaireView>> getUserQuestionnaire(){
+        List<QuestionnaireIdAndStudentIdView> questionnaireIds = userQuestionnaireService.selectByUserId();
         List<QuestionnaireView> userQuestionnaire = questionnaireService.getUserQuestionnaire(questionnaireIds);
         return R.successNoShow(userQuestionnaire);
     }

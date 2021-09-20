@@ -135,7 +135,6 @@
             <artifactId>sa-token-spring-boot-starter</artifactId>
             <version>1.26.0</version>
         </dependency>
-
     </dependencies>
 
     <build>

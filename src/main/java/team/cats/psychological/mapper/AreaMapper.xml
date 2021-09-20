@@ -9,7 +9,7 @@
             and area_name like concat('%',#{value},'%')
         </if>
         <if test="provinceId != null">
-            and province_name =#{provinceId}
+            and province_id =#{provinceId}
         </if>
         <if test="cityId != null">
             and city_id =#{cityId}

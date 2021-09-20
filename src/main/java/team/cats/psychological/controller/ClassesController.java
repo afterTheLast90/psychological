@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
 import team.cats.psychological.base.R;
@@ -48,6 +49,9 @@ public class ClassesController {
     @PostMapping("/delClasses")
     @ApiOperation("删除班级")
     public R delClasses(@RequestParam("classId") Long classId){
+        if (classId==null){
+            throw new BaseException(400,"classId不能为空");
+        }
         classesService.delClasses(classId);
         return R.success();
     }

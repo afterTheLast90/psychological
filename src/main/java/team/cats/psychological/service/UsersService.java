@@ -1,5 +1,6 @@
 package team.cats.psychological.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.yitter.idgen.YitIdHelper;
@@ -34,6 +35,8 @@ public class UsersService {
     private StudentsParentMapper studentsParentMapper;
     @Resource
     private TeacherSchoolMapper teacherSchoolMapper;
+    @Resource
+    private StudentsClassMapper studentsClassMapper;
 
 
     public List<Users> getTeacherArray() {
@@ -88,10 +91,10 @@ public class UsersService {
      * @param value
      * @return
      */
-    public PageResult<Teacher> getTeacherList(BasePageParam basePageParam, Long schoolId, String value,Long userId) {
+    public PageResult<Teacher> getTeacherList(BasePageParam basePageParam, Long schoolId, String value) {
         PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
 
-
+        long userId = StpUtil.getLoginIdAsLong();
         List<Teacher> teachers = usersMapper.selectTeacher(value, schoolId);
         for (Teacher teacher : teachers) {
             Long schoolId2 = teacherSchoolMapper.selectByTeacherId(teacher.getUserId());
@@ -130,7 +133,7 @@ public class UsersService {
                 List<School> schools = schoolMapper.selectList(schoolQueryWrapper);
                 for (School school : schools) {
                     for (Teacher teacher : teachers) {
-                        if (teacher.getSchool().getSchoolId()==school.getSchoolId()){
+                        if (teacher.getSchool().getSchoolId().equals(school.getSchoolId())){
                             aTeachers.add(teacher);
                         }
                     }
@@ -153,8 +156,59 @@ public class UsersService {
      */
     public PageResult<StudentView> getClassesList(BasePageParam basePageParam, Long classId, String value) {
         PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
+        List<StudentView> studentViewList = new ArrayList<>();
         List<StudentView> studentViews = usersMapper.selectStudent(value, classId);
-        for (StudentView studentView : studentViews) {
+
+
+        long userId = StpUtil.getLoginIdAsLong();
+        Users users = usersMapper.selectById(userId);
+        Long userRole = users.getUserRole();
+        if (userRole == 0) {
+            studentViewList=studentViews;
+        } else if (userRole == 1) {
+            QueryWrapper<Area> areaQueryWrapper = new QueryWrapper<>();
+            areaQueryWrapper.eq("area_principal", userId);
+            List<Area> areas = areaMapper.selectList(areaQueryWrapper);
+            for (Area area : areas) {
+                QueryWrapper<School> schoolQueryWrapper = new QueryWrapper<>();
+                schoolQueryWrapper.eq("area_id", area.getAreaId());
+                List<School> schools = schoolMapper.selectList(schoolQueryWrapper);
+                for (School school : schools) {
+                    QueryWrapper<Classes> classesQueryWrapper = new QueryWrapper<>();
+                    classesQueryWrapper.eq("school_id", school.getSchoolId());
+                    List<Classes> classes = classesMapper.selectList(classesQueryWrapper);
+                    for (Classes aClass : classes) {
+                        QueryWrapper<StudentsClass> studentsClassQueryWrapper = new QueryWrapper<>();
+                        studentsClassQueryWrapper.eq("class_id",aClass.getClassId());
+                        List<StudentsClass> studentsClasses = studentsClassMapper.selectList(studentsClassQueryWrapper);
+                        for (StudentView studentView : studentViews) {
+                            for (StudentsClass studentsClass : studentsClasses) {
+                                if (studentsClass.getStudentId().equals(studentView.getUserId())){
+                                    studentViewList.add(studentView);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (userRole == 4) {
+            QueryWrapper<Classes> classesQueryWrapper = new QueryWrapper<>();
+            classesQueryWrapper.eq("teacher_id", userId);
+            List<Classes> classes = classesMapper.selectList(classesQueryWrapper);
+            for (Classes aClass : classes) {
+                QueryWrapper<StudentsClass> studentsClassQueryWrapper = new QueryWrapper<>();
+                studentsClassQueryWrapper.eq("class_id",aClass.getClassId());
+                List<StudentsClass> studentsClasses = studentsClassMapper.selectList(studentsClassQueryWrapper);
+                for (StudentView studentView : studentViews) {
+                    for (StudentsClass studentsClass : studentsClasses) {
+                        if (studentsClass.getStudentId().equals(studentView.getUserId())){
+                            studentViewList.add(studentView);
+                        }
+                    }
+                }
+            }
+        }
+        for (StudentView studentView : studentViewList) {
             List<ClassesView> classes = classesMapper.selectByStudentId(studentView.getUserId());
             for (ClassesView aClass : classes) {
                 aClass.setSchoolName(schoolMapper.selectById(aClass.getSchoolId()).getSchoolName());
@@ -189,7 +243,7 @@ public class UsersService {
             studentView.setAge(age);
         }
 
-        return new PageResult<StudentView>(studentViews);
+        return new PageResult<StudentView>(studentViewList);
     }
 
     /**
@@ -281,8 +335,22 @@ public class UsersService {
     /**
      * 获取用户信息
      */
-    public Users getUser(Long userId){
-        Users users = usersMapper.selectById(userId);
-        return users;
+    public UserInformationView getUser(){
+        UserInformationView userInformationView = new UserInformationView();
+        List<String> classNames = new ArrayList<>();
+        long userId = StpUtil.getLoginIdAsLong();
+        Users user = usersMapper.selectById(userId);
+        if (user.getUserRole()==2){
+            QueryWrapper<StudentsClass> studentsClassQueryWrapper = new QueryWrapper<>();
+            studentsClassQueryWrapper.eq("student_id",user.getUserId());
+            List<StudentsClass> studentsClasses = studentsClassMapper.selectList(studentsClassQueryWrapper);
+            for (StudentsClass studentsClass : studentsClasses) {
+                Classes classes = classesMapper.selectById(studentsClass.getClassId());
+                classNames.add(classes.getClassName());
+            }
+        }
+        userInformationView.setUsers(user);
+        userInformationView.setClassName(classNames);
+        return userInformationView;
     }
 }

@@ -1,6 +1,7 @@
 package team.cats.psychological.controller;
 
 
+import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.catalina.User;
@@ -34,6 +35,9 @@ public class TeacherSchoolController {
     @PostMapping("/addTeacher")
     @ApiOperation("添加教师")
     public R addTeacher(@Validated @RequestBody UserParams userParams,@RequestParam("schoolId") Long schoolId){
+        if (schoolId==null){
+            throw new BaseException(400,"学校不能为空");
+        }
         Long userId = usersService.InsertUser(userParams, 4L);
         teacherSchoolService.insertTeacher(userId,schoolId);
         return R.success();
@@ -50,9 +54,8 @@ public class TeacherSchoolController {
     @GetMapping("/getTeacherList")
     @ApiOperation("获取教师信息")
     public  R<PageResult<Teacher>> selectTeacher(BasePageParam basePageParam, @RequestParam(value = "schoolId", required = false, defaultValue = "") Long schoolId,
-                                                 @RequestParam(value = "value", required = false, defaultValue = "") String value,
-                                                 @RequestParam("userId") Long userId){
-        return R.successNoShow(usersService.getTeacherList(basePageParam,schoolId,value,userId));
+                                                 @RequestParam(value = "value", required = false, defaultValue = "") String value){
+        return R.successNoShow(usersService.getTeacherList(basePageParam,schoolId,value));
     }
 
     @PostMapping("/modifyTeacher")

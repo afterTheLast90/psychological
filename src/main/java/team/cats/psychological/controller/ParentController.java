@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.R;
 import team.cats.psychological.param.UserParams;
 import team.cats.psychological.service.StudentsParentService;
@@ -29,7 +30,6 @@ public class ParentController {
     @ApiOperation("添加家长")
     public R addTeacher(@Validated @RequestBody UserParams userParams){
         usersService.InsertUser(userParams, 3L);
-//        studentsParentService.insertParent(studentId,userId);
         return R.success();
     }
 
@@ -49,6 +49,12 @@ public class ParentController {
     @PostMapping("/modifyParent")
     @ApiOperation("更新家长")
     public R modifyParent(@RequestParam("studentId") Long studentId,@RequestParam("parentId") Long parentId){
+        if (parentId==null){
+            throw new BaseException(400,"parent不能为空");
+        }
+        if (studentId==null){
+            throw new BaseException(400,"student不能为空");
+        }
         studentsParentService.modifyParent(studentId,parentId);
         return R.success();
     }

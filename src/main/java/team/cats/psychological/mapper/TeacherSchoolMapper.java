@@ -12,9 +12,9 @@ import java.util.List;
 public interface TeacherSchoolMapper extends BaseMapper<TeacherSchool> {
 
 
-    @Select("select school_id from teacher_school where teacher_id = #{teacherId} ")
+    @Select("select school_id from teacher_school where teacher_id = #{teacherId} and delete_flag=0 ")
     public Long selectByTeacherId(@Param("teacherId") Long teacherId);
 
-    @Select("select * from teacher_school where teacher_id = #{teacherId} ")
+    @Select("select * from teacher_school where teacher_id = #{teacherId} and delete_flag=0 ")
     public TeacherSchool selectByTeacherId2(@Param("teacherId") Long teacherId);
 }
