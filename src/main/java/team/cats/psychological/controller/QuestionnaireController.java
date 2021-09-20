@@ -44,8 +44,8 @@ public class QuestionnaireController {
 
     @PostMapping("/insertQuestionnaire")
     @ApiOperation("新增问卷")
-    public R insertQuestionnaire(@RequestParam("name") String name,@RequestParam("introduction") String introduction,@RequestParam("creator") Long creator){
-        questionnaireService.InsertQuestionnaire(name,introduction,creator);
+    public R insertQuestionnaire(@RequestParam("name") String name,@RequestParam("introduction") String introduction){
+        questionnaireService.InsertQuestionnaire(name,introduction);
         return R.success();
     }
 

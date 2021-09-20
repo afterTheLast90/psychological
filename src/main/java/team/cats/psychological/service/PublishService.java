@@ -1,5 +1,6 @@
 package team.cats.psychological.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
@@ -33,10 +34,11 @@ public class PublishService {
     @Resource
     private UserQuestionnaireMapper userQuestionnaireMapper;
 
-    public PageResult<PublishView> getPublish(BasePageParam basePageParam, Long userId) {
+    public PageResult<PublishView> getPublish(BasePageParam basePageParam) {
         PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
         List<PublishView> publishViews = new ArrayList<>();
         List<Publish> publishes = new ArrayList<>();
+        long userId = StpUtil.getLoginIdAsLong();
         Users users = usersMapper.selectById(userId);
         Long userRole = users.getUserRole();
         QueryWrapper<Publish> queryWrapper = new QueryWrapper<>();

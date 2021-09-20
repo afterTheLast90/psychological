@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 public class ReleaseParams {
-    @NotNull(message = "用户Id不能为空")
-    private Long userId;
     @NotNull(message = "问题Id不能为空")
     private Long questionnaireId;
     @NotNull(message = "Id不能为空")

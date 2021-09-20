@@ -26,8 +26,8 @@ public class PublishController {
 
     @GetMapping(value = {"/publish"})
     @ApiOperation("获取所有发布记录")
-    public R<PageResult<PublishView>> getUsers(BasePageParam basePageParam, @RequestParam(value = "userId") Long userId) {
-        return R.successNoShow(publishService.getPublish(basePageParam,userId));
+    public R<PageResult<PublishView>> getUsers(BasePageParam basePageParam) {
+        return R.successNoShow(publishService.getPublish(basePageParam));
     }
 
     @PostMapping("delPublish")

@@ -30,7 +30,7 @@ public class UserQuestionnaireController {
     @ApiOperation("发布问卷")
     public R releaseQuestionnaire(@Valid @RequestBody ReleaseParams releaseParams) {
         System.out.println(releaseParams);
-        userQuestionnaireService.releaseQuestionnaire(releaseParams.getUserId(), releaseParams.getQuestionnaireId(),
+        userQuestionnaireService.releaseQuestionnaire(releaseParams.getQuestionnaireId(),
                 releaseParams.getId(), releaseParams.getPublishType(), releaseParams.getReleaseTime(), releaseParams.getDeadLine());
         return R.success();
     }
@@ -59,8 +59,8 @@ public class UserQuestionnaireController {
 
     @GetMapping("/getResult")
     @ApiOperation("获取问卷结果")
-    public R<PageResult<QuestionnaireResultView>> getQuestionnaireResult(BasePageParam basePageParam, @RequestParam("userId") Long userId){
-        return R.successNoShow(userQuestionnaireService.getQuestionnaireResult(basePageParam,userId));
+    public R<PageResult<QuestionnaireResultView>> getQuestionnaireResult(BasePageParam basePageParam){
+        return R.successNoShow(userQuestionnaireService.getQuestionnaireResult(basePageParam));
     }
 
     @GetMapping("getLastResult")

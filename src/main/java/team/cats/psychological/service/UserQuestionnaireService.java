@@ -56,7 +56,8 @@ public class UserQuestionnaireService {
     private PublishMapper publishMapper;
 
 
-    public void releaseQuestionnaire(Long userId, Long questionnaireId, Long id, Integer publishType, LocalDateTime releaseTime, LocalDateTime deadLine) {
+    public void releaseQuestionnaire(Long questionnaireId, Long id, Integer publishType, LocalDateTime releaseTime, LocalDateTime deadLine) {
+        long userId = StpUtil.getLoginIdAsLong();
         Questionnaire questionnaire1 = questionnaireMapper.selectById(questionnaireId);
         Publish publish = new Publish();
         publish.setPublishId(YitIdHelper.nextId());
@@ -604,8 +605,9 @@ public class UserQuestionnaireService {
         return userQuestionnaireMapper.selectOne(queryWrapper);
     }
 
-    public PageResult<QuestionnaireResultView> getQuestionnaireResult(BasePageParam basePageParam, Long userId) {
+    public PageResult<QuestionnaireResultView> getQuestionnaireResult(BasePageParam basePageParam) {
         PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
+        long userId = StpUtil.getLoginIdAsLong();
         Users users = usersMapper.selectById(userId);
         Long userRole = users.getUserRole();
         List<UserQuestionnaire> userQuestionnaires = new ArrayList<>();

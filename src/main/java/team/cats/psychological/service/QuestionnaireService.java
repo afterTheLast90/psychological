@@ -1,5 +1,6 @@
 package team.cats.psychological.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.yitter.idgen.YitIdHelper;
@@ -42,12 +43,13 @@ public class QuestionnaireService {
         return questionnaireMapper.selectById(id);
     }
 
-    public void InsertQuestionnaire(String name,String introduction,Long creator){
+    public void InsertQuestionnaire(String name,String introduction){
+        long userId = StpUtil.getLoginIdAsLong();
         Questionnaire questionnaire= new Questionnaire();
         questionnaire.setQuestionnaireId(YitIdHelper.nextId());
         questionnaire.setQuestionnaireName(name);
         questionnaire.setQuestionnaireIntroduction(introduction);
-        questionnaire.setCreator(creator);
+        questionnaire.setCreator(userId);
         questionnaireMapper.insert(questionnaire);
     }
 
