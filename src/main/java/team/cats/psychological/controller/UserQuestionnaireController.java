@@ -4,12 +4,17 @@ package team.cats.psychological.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import team.cats.psychological.base.BasePageParam;
+import team.cats.psychological.base.PageResult;
 import team.cats.psychological.base.R;
+import team.cats.psychological.entity.Questionnaire;
 import team.cats.psychological.entity.UserQuestionnaire;
 import team.cats.psychological.param.ReleaseParams;
 import team.cats.psychological.service.UserQuestionnaireService;
 import team.cats.psychological.vo.AnswerQuestionnaireView;
 import team.cats.psychological.vo.NewAnswerQuestionnaireView;
+import team.cats.psychological.vo.QuestionnaireResultView;
+import team.cats.psychological.vo.UsersAndArea;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -50,5 +55,18 @@ public class UserQuestionnaireController {
                                                       @RequestParam("questionnaireId") Long questionnaireId) {
         UserQuestionnaire userQuestionnaire = userQuestionnaireService.getUserQuestionnaire(userId, questionnaireId);
         return R.successNoShow(userQuestionnaire);
+    }
+
+    @GetMapping("/getResult")
+    @ApiOperation("获取问卷结果")
+    public R<PageResult<QuestionnaireResultView>> getQuestionnaireResult(BasePageParam basePageParam, @RequestParam("userId") Long userId){
+        return R.successNoShow(userQuestionnaireService.getQuestionnaireResult(basePageParam,userId));
+    }
+
+    @GetMapping("getLastResult")
+    @ApiOperation("获取单个结果")
+    public R<UserQuestionnaire> getLastResult(@RequestParam("userQuestionnaireId")Long userQuestionnaireId){
+
+        return R.success(userQuestionnaireService.getLastResult(userQuestionnaireId));
     }
 }
