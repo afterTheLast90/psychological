@@ -50,8 +50,9 @@ public class TeacherSchoolController {
     @GetMapping("/getTeacherList")
     @ApiOperation("获取教师信息")
     public  R<PageResult<Teacher>> selectTeacher(BasePageParam basePageParam, @RequestParam(value = "schoolId", required = false, defaultValue = "") Long schoolId,
-                                                 @RequestParam(value = "value", required = false, defaultValue = "") String value){
-        return R.successNoShow(usersService.getTeacherList(basePageParam,schoolId,value));
+                                                 @RequestParam(value = "value", required = false, defaultValue = "") String value,
+                                                 @RequestParam("userId") Long userId){
+        return R.successNoShow(usersService.getTeacherList(basePageParam,schoolId,value,userId));
     }
 
     @PostMapping("/modifyTeacher")

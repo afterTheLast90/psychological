@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
-import team.cats.psychological.entity.Classes;
+import team.cats.psychological.entity.*;
 import team.cats.psychological.entity.StudentsParent;
-import team.cats.psychological.entity.Users;
 import team.cats.psychological.mapper.*;
 import team.cats.psychological.param.UserParams;
 import team.cats.psychological.vo.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -88,8 +88,10 @@ public class UsersService {
      * @param value
      * @return
      */
-    public PageResult<Teacher> getTeacherList(BasePageParam basePageParam, Long schoolId, String value) {
+    public PageResult<Teacher> getTeacherList(BasePageParam basePageParam, Long schoolId, String value,Long userId) {
         PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
+
+
         List<Teacher> teachers = usersMapper.selectTeacher(value, schoolId);
         for (Teacher teacher : teachers) {
             Long schoolId2 = teacherSchoolMapper.selectByTeacherId(teacher.getUserId());
@@ -112,7 +114,32 @@ public class UsersService {
             teacher.setAge(age);
         }
 
-        return new PageResult<Teacher>(teachers);
+
+        List<Teacher> aTeachers = new ArrayList<>();
+        Users users = usersMapper.selectById(userId);
+        Long userRole = users.getUserRole();
+        if (userRole==0){
+            aTeachers=teachers;
+        }else if (userRole==1){
+            QueryWrapper<Area> areaQueryWrapper=new QueryWrapper<>();
+            areaQueryWrapper.eq("area_principal",userId);
+            List<Area> areas = areaMapper.selectList(areaQueryWrapper);
+            for (Area area : areas) {
+                QueryWrapper<School> schoolQueryWrapper = new QueryWrapper<>();
+                schoolQueryWrapper.eq("area_id",area.getAreaId());
+                List<School> schools = schoolMapper.selectList(schoolQueryWrapper);
+                for (School school : schools) {
+                    for (Teacher teacher : teachers) {
+                        if (teacher.getSchool().getSchoolId()==school.getSchoolId()){
+                            aTeachers.add(teacher);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return new PageResult<Teacher>(aTeachers);
     }
 
 
