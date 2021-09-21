@@ -48,4 +48,9 @@ public class SchoolController {
     public R<List<ListItemVo>> getSchoolList(){
         return R.successNoShow(schoolService.getSchoolList());
     }
+    @GetMapping("/getSchoolListNoLogin")
+    @ApiOperation("不登陆获取学校列表")
+    public R<List<ListItemVo>> getSchoolListNoLogin(){
+        return R.successNoShow(schoolService.getSchoolListNoLogin());
+    }
 }

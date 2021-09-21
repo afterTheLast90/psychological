@@ -51,6 +51,12 @@ public class AreaService {
 
     public void deleteArea(Long areaId) {
         Area area =getAreaNotNull(areaId);
+        QueryWrapper<School> schoolQueryWrapper = new QueryWrapper<>();
+        schoolQueryWrapper.eq("area_id",area.getAreaId());
+        List<School> schoolList = schoolMapper.selectList(schoolQueryWrapper);
+        if (schoolList.size()>0){
+            throw new BaseException(400,"地区中还有学校，不能删除");
+        }
         areaMapper.deleteById(areaId);
     }
 

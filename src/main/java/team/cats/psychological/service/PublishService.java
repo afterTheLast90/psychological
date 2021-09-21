@@ -1,6 +1,7 @@
 package team.cats.psychological.service;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,9 @@ import team.cats.psychological.mapper.*;
 import team.cats.psychological.vo.PublishView;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,6 +78,10 @@ public class PublishService {
 
         publishes = publishes.stream().distinct().collect(Collectors.toList());
         for (Publish publish : publishes) {
+            if (publish.getDeadline().compareTo(LocalDateTime.now())<0){
+                publish.setState(1);
+                publishMapper.updateById(publish);
+            }
             PublishView publishView = new PublishView();
             publishView.setPublish(publish);
             Long strangeId = publish.getStrangeId();

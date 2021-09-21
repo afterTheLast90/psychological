@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class AnswerQuestionnaireView {
+    private Long publishId;
     private List<Answer> answers;
     private Long userId;
     private Long questionnaireId;

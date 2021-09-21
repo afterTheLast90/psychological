@@ -2,6 +2,7 @@ package team.cats.psychological.service;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.yitter.idgen.YitIdHelper;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import team.cats.psychological.vo.*;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,6 +86,8 @@ public class UserQuestionnaireService {
             QueryWrapper<Publish> publishQueryWrapperStudent = new QueryWrapper<>();
             publishQueryWrapperStudent.eq("strange_id", userId);
             publishQueryWrapperStudent.eq("publish_type", 3);
+            publishQueryWrapperStudent.eq("state",0);
+            publishQueryWrapperStudent.gt("deadLine",new Date());
             publishQueryWrapperStudent.in("choose_people", new Integer[]{0, 3, 4, 6});
             List<Publish> publishes = publishMapper.selectList(publishQueryWrapperStudent);
             for (Publish publish : publishes) {
@@ -103,6 +107,8 @@ public class UserQuestionnaireService {
                 QueryWrapper<Publish> publishQueryWrapperClass = new QueryWrapper<>();
                 publishQueryWrapperClass.eq("strange_id", studentsClass.getClassId());
                 publishQueryWrapperClass.eq("publish_type", 2);
+                publishQueryWrapperClass.eq("state",0);
+                publishQueryWrapperClass.gt("deadLine",new Date());
                 publishQueryWrapperClass.in("choose_people", new Integer[]{0, 3, 4, 6});
                 List<Publish> publishes1 = publishMapper.selectList(publishQueryWrapperClass);
                 for (Publish publish : publishes1) {
@@ -120,6 +126,8 @@ public class UserQuestionnaireService {
                 QueryWrapper<Publish> publishQueryWrapperSchool = new QueryWrapper<>();
                 publishQueryWrapperSchool.eq("strange_id", classes.getSchoolId());
                 publishQueryWrapperSchool.eq("publish_type", 1);
+                publishQueryWrapperSchool.eq("state",0);
+                publishQueryWrapperSchool.gt("deadLine",new Date());
                 publishQueryWrapperSchool.in("choose_people", new Integer[]{0, 3, 4, 6});
                 List<Publish> publishes2 = publishMapper.selectList(publishQueryWrapperSchool);
                 for (Publish publish : publishes2) {
@@ -138,6 +146,8 @@ public class UserQuestionnaireService {
                 QueryWrapper<Publish> publishQueryWrapperArea = new QueryWrapper<>();
                 publishQueryWrapperArea.eq("strange_id", school.getAreaId());
                 publishQueryWrapperArea.eq("publish_type", 0);
+                publishQueryWrapperArea.eq("state",0);
+                publishQueryWrapperArea.gt("deadLine",new Date());
                 publishQueryWrapperArea.in("choose_people", new Integer[]{0, 3, 4, 6});
                 List<Publish> publishes3 = publishMapper.selectList(publishQueryWrapperArea);
                 for (Publish publish : publishes3) {
@@ -159,6 +169,8 @@ public class UserQuestionnaireService {
                 QueryWrapper<Publish> publishQueryWrapper = new QueryWrapper<>();
                 publishQueryWrapper.eq("strange_id", studentsParent.getStudentId());
                 publishQueryWrapper.eq("publish_type", 3);
+                publishQueryWrapper.eq("state",0);
+                publishQueryWrapper.gt("deadLine",new Date());
                 publishQueryWrapper.in("choose_people", new Integer[]{1, 5});
                 List<Publish> publishes = publishMapper.selectList(publishQueryWrapper);
                 for (Publish publish : publishes) {
@@ -180,6 +192,8 @@ public class UserQuestionnaireService {
                     QueryWrapper<Publish> publishQueryWrapperClass = new QueryWrapper<>();
                     publishQueryWrapperClass.eq("strange_id", studentsClass.getClassId());
                     publishQueryWrapperClass.eq("publish_type", 2);
+                    publishQueryWrapperClass.eq("state",0);
+                    publishQueryWrapperClass.gt("deadLine",new Date());
                     publishQueryWrapperClass.in("choose_people", new Integer[]{1, 5});
                     List<Publish> publishes1 = publishMapper.selectList(publishQueryWrapperClass);
                     for (Publish publish : publishes1) {
@@ -199,6 +213,8 @@ public class UserQuestionnaireService {
                     QueryWrapper<Publish> publishQueryWrapperSchool = new QueryWrapper<>();
                     publishQueryWrapperSchool.eq("strange_id", classes.getSchoolId());
                     publishQueryWrapperSchool.eq("publish_type", 1);
+                    publishQueryWrapperSchool.eq("state",0);
+                    publishQueryWrapperSchool.gt("deadLine",new Date());
                     publishQueryWrapperSchool.in("choose_people", new Integer[]{1, 5});
                     List<Publish> publishes2 = publishMapper.selectList(publishQueryWrapperSchool);
                     for (Publish publish : publishes2) {
@@ -217,6 +233,8 @@ public class UserQuestionnaireService {
                     QueryWrapper<Publish> publishQueryWrapperArea = new QueryWrapper<>();
                     publishQueryWrapperArea.eq("strange_id", school.getAreaId());
                     publishQueryWrapperArea.eq("publish_type", 0);
+                    publishQueryWrapperArea.eq("state",0);
+                    publishQueryWrapperArea.gt("deadLine",new Date());
                     publishQueryWrapperArea.in("choose_people", new Integer[]{1, 5});
                     List<Publish> publishes3 = publishMapper.selectList(publishQueryWrapperArea);
                     for (Publish publish : publishes3) {
@@ -245,6 +263,8 @@ public class UserQuestionnaireService {
                     publishQueryWrapper.eq("strange_id", studentsClass.getStudentId());
                     publishQueryWrapper.eq("publish_type", 3);
                     publishQueryWrapper.eq("choose_people", 2);
+                    publishQueryWrapper.eq("state",0);
+                    publishQueryWrapper.gt("deadLine",new Date());
                     List<Publish> publishes = publishMapper.selectList(publishQueryWrapper);
                     for (Publish publish : publishes) {
                         QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
@@ -263,6 +283,8 @@ public class UserQuestionnaireService {
                 QueryWrapper<Publish> publishQueryWrapperClass = new QueryWrapper<>();
                 publishQueryWrapperClass.eq("strange_id", aLong);
                 publishQueryWrapperClass.eq("publish_type", 2);
+                publishQueryWrapperClass.eq("state",0);
+                publishQueryWrapperClass.gt("deadLine",new Date());
                 publishQueryWrapperClass.eq("choose_people", 2);
                 List<Publish> publishes1 = publishMapper.selectList(publishQueryWrapperClass);
                 for (Publish publish : publishes1) {
@@ -280,6 +302,8 @@ public class UserQuestionnaireService {
                 publishQueryWrapperSchool.eq("strange_id", aLong);
                 publishQueryWrapperSchool.eq("publish_type", 1);
                 publishQueryWrapperSchool.eq("choose_people", 2);
+                publishQueryWrapperSchool.eq("state",0);
+                publishQueryWrapperSchool.gt("deadLine",new Date());
                 List<Publish> publishes1 = publishMapper.selectList(publishQueryWrapperSchool);
                 for (Publish publish : publishes1) {
                     QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
@@ -301,6 +325,8 @@ public class UserQuestionnaireService {
                 publishQueryWrapperArea.eq("strange_id", aLong);
                 publishQueryWrapperArea.eq("publish_type", 0);
                 publishQueryWrapperArea.eq("choose_people", 2);
+                publishQueryWrapperArea.eq("state",0);
+                publishQueryWrapperArea.gt("deadLine",new Date());
                 List<Publish> publishes1 = publishMapper.selectList(publishQueryWrapperArea);
                 for (Publish publish : publishes1) {
                     QuestionnaireIdAndStudentIdView questionnaireIdAndStudentIdView = new QuestionnaireIdAndStudentIdView();
@@ -345,6 +371,7 @@ public class UserQuestionnaireService {
         QueryWrapper<UserQuestionnaire> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", answerQuestionnaireView.getUserId());
         queryWrapper.eq("questionnaire", answerQuestionnaireView.getQuestionnaireId());
+        queryWrapper.eq("publish_id",answerQuestionnaireView.getPublishId());
         //查到用户问卷表
         UserQuestionnaire userQuestionnaire = userQuestionnaireMapper.selectOne(queryWrapper);
         userQuestionnaire.setAnswer(answerQuestionnaireView.getAnswers());
@@ -598,13 +625,13 @@ public class UserQuestionnaireService {
         userQuestionnaireMapper.insert(userQuestionnaire);
     }
 
-    public UserQuestionnaire getUserQuestionnaire(Long userId, Long questionnaireId) {
+    public UserQuestionnaire getUserQuestionnaire(Long userId, Long questionnaireId,Long publishId) {
         QueryWrapper<UserQuestionnaire> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId);
         queryWrapper.eq("questionnaire", questionnaireId);
+        queryWrapper.eq("publish_id", publishId);
         return userQuestionnaireMapper.selectOne(queryWrapper);
     }
-
     public PageResult<QuestionnaireResultView> getQuestionnaireResult(BasePageParam basePageParam) {
         PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
         long userId = StpUtil.getLoginIdAsLong();
@@ -645,5 +672,20 @@ public class UserQuestionnaireService {
     public UserQuestionnaire getLastResult(Long userQuestionnaireId){
         UserQuestionnaire userQuestionnaire = userQuestionnaireMapper.selectById(userQuestionnaireId);
         return userQuestionnaire;
+    }
+    public PageResult<ResultView> getPublishResult(BasePageParam basePageParam ,Long publishId){
+        PageHelper.startPage(basePageParam.getPageNum(), basePageParam.getPageSize());
+        List<ResultView> resultViews=new ArrayList<>();
+        QueryWrapper<UserQuestionnaire> userQuestionnaireQueryWrapper=new QueryWrapper<>();
+        userQuestionnaireQueryWrapper.eq("publish_id",publishId);
+        userQuestionnaireQueryWrapper.eq("state",3);
+        List<UserQuestionnaire> userQuestionnaires = userQuestionnaireMapper.selectList(userQuestionnaireQueryWrapper);
+        for (UserQuestionnaire userQuestionnaire : userQuestionnaires) {
+            ResultView resultView = new ResultView();
+            resultView.setUserQuestionnaire(userQuestionnaire);
+            resultView.setUserName(usersMapper.selectById(userQuestionnaire.getUserId()).getUserName());
+            resultViews.add(resultView);
+        }
+        return new PageResult<ResultView>(resultViews) ;
     }
 }

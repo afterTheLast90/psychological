@@ -109,9 +109,9 @@ public class QuestionnaireService {
             if (questionnaireDetail.getChosePeople() == 0) {
                 student = true;
             } else if (questionnaireDetail.getChosePeople() == 1) {
-                teacher = true;
-            } else {
                 parent = true;
+            } else {
+                teacher = true;
             }
         }
         Questionnaire questionnaire = questionnaireMapper.selectById(questionnaireId);

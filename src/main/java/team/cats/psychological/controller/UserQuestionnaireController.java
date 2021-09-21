@@ -7,14 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
 import team.cats.psychological.base.R;
-import team.cats.psychological.entity.Questionnaire;
 import team.cats.psychological.entity.UserQuestionnaire;
 import team.cats.psychological.param.ReleaseParams;
 import team.cats.psychological.service.UserQuestionnaireService;
 import team.cats.psychological.vo.AnswerQuestionnaireView;
 import team.cats.psychological.vo.NewAnswerQuestionnaireView;
 import team.cats.psychological.vo.QuestionnaireResultView;
-import team.cats.psychological.vo.UsersAndArea;
+import team.cats.psychological.vo.ResultView;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -44,7 +43,7 @@ public class UserQuestionnaireController {
 
     @PostMapping("/answerNewQuestionnaire")
     @ApiOperation("回答新问卷")
-    public R answerNewQuestionnaire(@Valid @RequestBody NewAnswerQuestionnaireView answerQuestionnaireView){
+    public R answerNewQuestionnaire(@Valid @RequestBody NewAnswerQuestionnaireView answerQuestionnaireView) {
         userQuestionnaireService.answerNewQuestionnaire(answerQuestionnaireView);
         return R.success();
     }
@@ -52,21 +51,29 @@ public class UserQuestionnaireController {
     @GetMapping("/getUserQuestionnaires")
     @ApiOperation("获取用户问卷关系")
     public R<UserQuestionnaire> getUserQuestionnaires(@RequestParam("userId") Long userId,
-                                                      @RequestParam("questionnaireId") Long questionnaireId) {
-        UserQuestionnaire userQuestionnaire = userQuestionnaireService.getUserQuestionnaire(userId, questionnaireId);
+                                                      @RequestParam("questionnaireId") Long questionnaireId,
+                                                      @RequestParam("publishId") Long publishId) {
+        System.out.println(publishId);
+        UserQuestionnaire userQuestionnaire = userQuestionnaireService.getUserQuestionnaire(userId, questionnaireId,publishId);
         return R.successNoShow(userQuestionnaire);
     }
 
     @GetMapping("/getResult")
     @ApiOperation("获取问卷结果")
-    public R<PageResult<QuestionnaireResultView>> getQuestionnaireResult(BasePageParam basePageParam){
+    public R<PageResult<QuestionnaireResultView>> getQuestionnaireResult(BasePageParam basePageParam) {
         return R.successNoShow(userQuestionnaireService.getQuestionnaireResult(basePageParam));
     }
 
-    @GetMapping("getLastResult")
+    @GetMapping("/getLastResult")
     @ApiOperation("获取单个结果")
-    public R<UserQuestionnaire> getLastResult(@RequestParam("userQuestionnaireId")Long userQuestionnaireId){
+    public R<UserQuestionnaire> getLastResult(@RequestParam("userQuestionnaireId") Long userQuestionnaireId) {
 
         return R.success(userQuestionnaireService.getLastResult(userQuestionnaireId));
+    }
+
+    @GetMapping("/getPublishResult")
+    @ApiOperation("获取发布的结果")
+    public R<PageResult<ResultView>> getPublishResult(BasePageParam basePageParam, @RequestParam("publishId") Long publishId) {
+        return R.success(userQuestionnaireService.getPublishResult(basePageParam, publishId));
     }
 }
