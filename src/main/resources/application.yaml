@@ -3,7 +3,12 @@ spring:
     url: jdbc:mysql://blog.wmgx.top:3306/psychological
     username: psychological
     password: psychological
-
+#  redis:
+#    host: blog.wmgx.top
+#    port: 6379
+#    database: 3
+#    password: 123456
+#
 
 mybatis-plus:
   global-config:
@@ -20,7 +25,6 @@ mybatis-plus:
     log-impl: top.wmgx.MybatisLogPlus
 server:
   port: 8081
-
 
 # Sa-Token配置
 sa-token:
