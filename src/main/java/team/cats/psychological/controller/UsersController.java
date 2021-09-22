@@ -33,7 +33,7 @@ public class UsersController {
 
     @PostMapping("/loginForAdmin")
     public R loginForAdmin(@RequestBody @Validated  LoginParams loginParams){
-        Users userByPhone = usersService.getUserByPhone(loginParams.getAccount());
+        Users userByPhone = usersService.getUserByPhoneOrAccount(loginParams.getAccount());
         if (userByPhone==null){
             throw new BaseException("用户不存在");
         }

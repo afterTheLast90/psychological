@@ -412,6 +412,8 @@ public class UserQuestionnaireService {
                     }
                 }
                 variablesAnswer.add(aDouble);
+                System.out.println("11111111111111111111111111111111111111111");
+                System.out.println(aDouble);
             } else if (variable.getType() == 1) {
                 Double aDouble = (double) 0;
                 Double aDouble1 = (double) 0;
