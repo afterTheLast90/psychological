@@ -36,6 +36,10 @@ public class AreaService {
 
     public void insertArea(AreaParams areaParams){
         Area area=new Area();
+        Area area1 = areaMapper.selectById(areaParams.getAreaId());
+        if (area1!=null){
+            throw new BaseException(400,"该地区已存在");
+        }
         area.setAreaId(areaParams.getAreaId());
         area.setAreaName(areaParams.getAreaName());
         area.setCityId(areaParams.getCityId());

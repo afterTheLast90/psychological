@@ -133,4 +133,27 @@ public class QuestionnaireService {
         questionnaire.setQuestionnaireState(1);
         questionnaireMapper.updateById(questionnaire);
     }
+
+    public void copy(Long questionnaireId){
+        long userId = StpUtil.getLoginIdAsLong();
+        Questionnaire questionnaire = questionnaireMapper.selectById(questionnaireId);
+        Questionnaire questionnaire1 = new Questionnaire();
+        questionnaire1.setQuestionnaireId(YitIdHelper.nextId());
+        questionnaire1.setQuestionnaireName(questionnaire.getQuestionnaireName()+"副本");
+        questionnaire1.setQuestionnaireIntroduction(questionnaire.getQuestionnaireIntroduction());
+        questionnaire1.setVariables(questionnaire.getVariables());
+        questionnaire1.setCalculation(questionnaire.getCalculation());
+        questionnaire1.setResults(questionnaire.getResults());
+        questionnaire1.setCreator(userId);
+        questionnaire1.setTopicTemplate(questionnaire.getTopicTemplate());
+        questionnaireMapper.insert(questionnaire1);
+        QueryWrapper<QuestionnaireDetails> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("questionnaire_id",questionnaire.getQuestionnaireId());
+        List<QuestionnaireDetails> questionnaireDetails = questionnaireDetailsMapper.selectList(queryWrapper);
+        for (QuestionnaireDetails questionnaireDetail : questionnaireDetails) {
+            questionnaireDetail.setQuestionId(YitIdHelper.nextId());
+            questionnaireDetail.setQuestionnaireId(questionnaire1.getQuestionnaireId());
+            questionnaireDetailsMapper.insert(questionnaireDetail);
+        }
+    }
 }

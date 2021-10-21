@@ -49,6 +49,7 @@ public class QuestionnaireDetailsService {
                 questionnaireDetails1.setAnswerOptions(questionnaireDetails.getAnswerOptions());
                 questionnaireDetails1.setChooseType(questionnaireDetails.getChooseType());
                 questionnaireDetails1.setChosePeople(questionnaireDetails.getChosePeople());
+                questionnaireDetails1.setQuestionType(questionnaireDetails.getQuestionType());
                 questionnaireDetailsMapper.insert(questionnaireDetails1);
             }
         }

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 /**
  * @author wmgx
- * @create 2021-08-15-20:25
+ * @create 2021-08-15-20:25 mp 基于 m 就
  **/
 @Configuration
 public class MybatisPlusConfig {

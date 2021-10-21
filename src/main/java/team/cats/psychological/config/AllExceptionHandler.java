@@ -1,10 +1,14 @@
 package team.cats.psychological.config;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.R;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 public class AllExceptionHandler {
@@ -42,4 +46,11 @@ public class AllExceptionHandler {
     public R exceptionMineHandler(BaseException e) {
         return new R(e.getCode(), e.getMsg(), null);
     }
+
+    @ExceptionHandler(NotLoginException.class)
+    @ResponseBody
+    public R notLoginExceptionHandler(NotLoginException e, HttpServletResponse response) {
+        return new R(401, "未登录", null);
+    }
+
 }

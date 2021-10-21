@@ -12,6 +12,7 @@
     <artifactId>psychological</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>psychological</name>
+    <packaging>jar</packaging>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
@@ -135,6 +136,11 @@
             <artifactId>sa-token-spring-boot-starter</artifactId>
             <version>1.26.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.1.2</version>
+        </dependency>
         <!-- Sa-Token 整合 Redis （使用jackson序列化方式） -->
 <!--        <dependency>-->
 <!--            <groupId>cn.dev33</groupId>-->
@@ -165,6 +171,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <includeSystemScope>true</includeSystemScope>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

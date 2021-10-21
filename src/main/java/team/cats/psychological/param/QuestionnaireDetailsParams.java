@@ -43,7 +43,7 @@ public class QuestionnaireDetailsParams {
     @NotNull(message = "因子不能为空")
     private Integer factorGroupId;
     /**
-     * 选项;选项名称，选项内容，选项分值
+     * 选项;选项名称，选项内容，选项分值，选项类型
      */
     private List<Option> answerOptions;
     /**
@@ -56,4 +56,7 @@ public class QuestionnaireDetailsParams {
      */
     @NotNull(message = "填写对象不能为空")
     private Integer chosePeople;
+
+    @NotNull(message = "题目类型不能为空")
+    private Boolean questionType;
 }

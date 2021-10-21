@@ -55,7 +55,7 @@ public class QuestionnaireController {
         questionnaireService.DelQuestionnaire(id);
         return R.success();
     }
-    @PostMapping("modifyQuestionnaire")
+    @PostMapping("/modifyQuestionnaire")
     @ApiOperation("编辑问卷")
     public R modifyQuestionnaire(@Valid @RequestBody QuestionnaireParams questionnaireParams){
         System.out.println(questionnaireParams);
@@ -63,7 +63,7 @@ public class QuestionnaireController {
         return R.success();
     }
 
-    @GetMapping("getUserQuestionnaire")
+    @GetMapping("/getUserQuestionnaire")
     @ApiOperation("获取用户问卷")
     public R<List<QuestionnaireView>> getUserQuestionnaire(){
         List<QuestionnaireIdAndStudentIdView> questionnaireIds = userQuestionnaireService.selectByUserId();
@@ -76,5 +76,12 @@ public class QuestionnaireController {
     public R confirm(@RequestParam("questionnaireId")Long questionnaireId){
         questionnaireService.confirm(questionnaireId);
         return R.success();
+    }
+
+    @PostMapping("/copy")
+    @ApiOperation("拷贝问卷")
+    public R copy(@RequestParam("questionnaireId")Long questionnaireId){
+        questionnaireService.copy(questionnaireId);
+        return R.success().setMsg("拷贝成功");
     }
 }

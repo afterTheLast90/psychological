@@ -23,4 +23,8 @@ public class Option {
      * 选项内容
      */
     private String optionContent;
+    /**
+     * 选项类型
+     */
+    private Boolean optionType;
 }

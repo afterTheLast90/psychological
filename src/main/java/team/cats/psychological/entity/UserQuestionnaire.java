@@ -1,5 +1,6 @@
 package team.cats.psychological.entity;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -11,6 +12,8 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @TableName(value = "user_questionnaire",autoResultMap = true)
@@ -119,4 +122,18 @@ public class UserQuestionnaire implements Serializable, Cloneable {
     private Long teacherId;
     private Integer choosePeople;
     private Long publishId;
+    public void setAnswer(List answer) {
+        if (answer.size()==0){
+            this.answer = answer;
+            return;
+        }
+        if (answer.get(0) instanceof Map){
+            this.answer = ((List<Map>)answer).stream().map(i-> BeanUtil.fillBeanWithMap(i,new Answer(),true)).collect(Collectors.toList());
+            return;
+        }
+        if (answer.get(0) instanceof Answer){
+            this.answer = answer;
+        }
+
+    }
 }

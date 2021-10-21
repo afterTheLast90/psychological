@@ -44,6 +44,4 @@ public class SwaggerConfig {
         r.add(new ApiKey("token", "token", "header")  );
         return r;
     }
-
-
 }

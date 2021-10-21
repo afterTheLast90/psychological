@@ -64,4 +64,8 @@ public class QuestionnaireDetails implements Serializable,Cloneable {
      * 修改时间
      */
     private LocalDateTime updateTime;
+    /**
+     * 题目类型
+     */
+    private Boolean questionType;
 }

@@ -8,7 +8,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
-
 @SpringBootApplication
 @MapperScan("team.cats.psychological.mapper")
 public class PsychologicalApplication {

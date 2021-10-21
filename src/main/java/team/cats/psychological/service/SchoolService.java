@@ -131,7 +131,7 @@ public class SchoolService {
         return schoolViewList.stream().map(
                 i -> {
                     final List<ListItemVo> children = classesMapper.selectBySchoolId(i.getSchoolId()).stream().map(t -> new ListItemVo()
-                            .setLabel(t.getClassName())
+                            .setLabel(t.getClassName()+" ("+t.getGrade()+")")
                             .setValue(t.getClassId())).collect(Collectors.toList());
                     return new ListItemVo()
                             .setLabel(i.getSchoolName())
@@ -148,7 +148,7 @@ public class SchoolService {
         return schoolViewList.stream().map(
                 i -> {
                     final List<ListItemVo> children = classesMapper.selectBySchoolId(i.getSchoolId()).stream().map(t -> new ListItemVo()
-                            .setLabel(t.getClassName())
+                            .setLabel(t.getClassName()+" ("+t.getGrade()+")")
                             .setValue(t.getClassId())).collect(Collectors.toList());
                     return new ListItemVo()
                             .setLabel(i.getSchoolName())
