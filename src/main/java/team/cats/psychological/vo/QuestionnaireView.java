@@ -63,6 +63,7 @@ public class QuestionnaireView {
      * 发布人姓名
      */
     private String publisherName;
+
     /**
      * 创建者
      */
@@ -71,6 +72,10 @@ public class QuestionnaireView {
      * 创建者姓名
      */
     private String creatorName;
+    /**
+     * 是否乱序
+     */
+    private Boolean orderNo;
     /**
      * 发布时间
      */

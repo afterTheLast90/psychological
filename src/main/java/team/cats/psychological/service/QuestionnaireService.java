@@ -39,7 +39,7 @@ public class QuestionnaireService {
         }
         return new PageResult<QuestionnaireView>(questionnaires);
     }
-    public Questionnaire selectById(String id){
+    public Questionnaire selectById(Long id){
         return questionnaireMapper.selectById(id);
     }
 
@@ -67,6 +67,7 @@ public class QuestionnaireService {
         questionnaire.setResults(questionnaireParams.getResults());
         questionnaire.setQuestionnaireState(questionnaireParams.getQuestionnaireState());
         questionnaire.setTopicTemplate(questionnaireParams.getTopicTemplate());
+        questionnaire.setOrderNo(questionnaireParams.getOrderNo());
         questionnaireMapper.updateById(questionnaire);
     }
 

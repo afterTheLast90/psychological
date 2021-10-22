@@ -38,7 +38,7 @@ public class QuestionnaireController {
 
     @GetMapping("/question")
     @ApiOperation("获取问卷详情")
-    public R<Questionnaire> getById(@RequestParam("id") String id){
+    public R<Questionnaire> getById(@RequestParam("id") Long id){
         return R.successNoShow(questionnaireService.selectById(id));
     }
 

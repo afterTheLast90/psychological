@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.R;
+import team.cats.psychological.entity.Users;
 import team.cats.psychological.param.UserParams;
 import team.cats.psychological.service.StudentsParentService;
 import team.cats.psychological.service.UsersService;
@@ -42,8 +43,9 @@ public class ParentController {
 
     @GetMapping("getParent")
     @ApiOperation("查找家长")
-    public R<List<AParentView>> getParent(){
-        return R.successNoShow(studentsParentService.getParent());
+    public R<Users> getParent(@RequestParam("parentId")Long parentId){
+        System.out.println(parentId);
+        return R.successNoShow(usersService.getParent(parentId) );
     }
 
     @PostMapping("/modifyParent")

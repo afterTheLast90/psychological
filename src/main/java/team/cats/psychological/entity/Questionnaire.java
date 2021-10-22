@@ -77,6 +77,10 @@ public class Questionnaire implements Serializable,Cloneable {
      * 答题人
      */
     private Integer choosePeople;
+    /**
+     * 是否乱序
+     */
+    private Boolean orderNo;
 
 
     public void setVariables(List variables) {

@@ -49,6 +49,8 @@ public class QuestionnaireParams {
      */
     @NotNull(message = "创建者不能为空")
     private Long creator;
+    @NotNull(message = "创建者不能为空")
+    private Boolean orderNo;
     /**
      * 题目模板
      */

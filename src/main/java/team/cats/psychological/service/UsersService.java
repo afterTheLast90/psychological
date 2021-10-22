@@ -417,4 +417,8 @@ public class UsersService {
         userInformationView.setClassName(classNames);
         return userInformationView;
     }
+
+    public Users getParent(Long parentId){
+        return usersMapper.selectById(parentId);
+    }
 }
