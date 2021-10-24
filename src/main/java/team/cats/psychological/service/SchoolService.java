@@ -115,29 +115,36 @@ public class SchoolService {
 
             }
         } else if (userRole == 4) {
-            QueryWrapper<TeacherSchool> teacherSchoolQueryWrapper = new QueryWrapper<>();
-            teacherSchoolQueryWrapper.eq("teacher_id", userId);
-            List<TeacherSchool> teacherSchools = teacherSchoolMapper.selectList(teacherSchoolQueryWrapper);
-            for (TeacherSchool teacherSchool : teacherSchools) {
-                for (SchoolView schoolView : schoolList) {
-                    if (teacherSchool.getSchoolId().equals(schoolView.getSchoolId())) {
-                        schoolViewList.add(schoolView);
-                    }
-                }
-            }
+            QueryWrapper<Classes> classesQueryWrapper=new QueryWrapper<>();
+            classesQueryWrapper.eq("teacher_id",userId);
+            List<Classes> classes = classesMapper.selectList(classesQueryWrapper);
+            return classes.stream().map(i->{
+                return new ListItemVo().setChildren(null).setValue(i.getClassId()).setLabel(i.getClassName());
+            }).collect(Collectors.toList());
+
+//            QueryWrapper<TeacherSchool> teacherSchoolQueryWrapper = new QueryWrapper<>();
+//            teacherSchoolQueryWrapper.eq("teacher_id", userId);
+//            List<TeacherSchool> teacherSchools = teacherSchoolMapper.selectList(teacherSchoolQueryWrapper);
+//            for (TeacherSchool teacherSchool : teacherSchools) {
+//                for (SchoolView schoolView : schoolList) {
+//                    if (teacherSchool.getSchoolId().equals(schoolView.getSchoolId())) {
+//                        schoolViewList.add(schoolView);
+//                    }
+//                }
+//            }
         } else if (userRole == 2) {
             schoolViewList = schoolList;
         }
-        return schoolViewList.stream().map(
-                i -> {
-                    final List<ListItemVo> children = classesMapper.selectBySchoolId(i.getSchoolId()).stream().map(t -> new ListItemVo()
-                            .setLabel(t.getClassName()+" ("+t.getGrade()+")")
-                            .setValue(t.getClassId())).collect(Collectors.toList());
-                    return new ListItemVo()
-                            .setLabel(i.getSchoolName())
-                            .setValue(i.getSchoolId())
-                            .setChildren(children);
-                }).collect(Collectors.toList());
+            return schoolViewList.stream().map(
+                    i -> {
+                        final List<ListItemVo> children = classesMapper.selectBySchoolId(i.getSchoolId()).stream().map(t -> new ListItemVo()
+                                .setLabel(t.getClassName()+" ("+t.getGrade()+")")
+                                .setValue(t.getClassId())).collect(Collectors.toList());
+                        return new ListItemVo()
+                                .setLabel(i.getSchoolName())
+                                .setValue(i.getSchoolId())
+                                .setChildren(children);
+                    }).collect(Collectors.toList());
     }
 
     @Transactional

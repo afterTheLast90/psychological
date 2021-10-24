@@ -8,14 +8,8 @@ import org.springframework.stereotype.Service;
 import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
-import team.cats.psychological.entity.Area;
-import team.cats.psychological.entity.Classes;
-import team.cats.psychological.entity.School;
-import team.cats.psychological.entity.Users;
-import team.cats.psychological.mapper.AreaMapper;
-import team.cats.psychological.mapper.ClassesMapper;
-import team.cats.psychological.mapper.SchoolMapper;
-import team.cats.psychological.mapper.UsersMapper;
+import team.cats.psychological.entity.*;
+import team.cats.psychological.mapper.*;
 import team.cats.psychological.param.ClassesParams;
 import team.cats.psychological.vo.ClassesView;
 
@@ -37,6 +31,8 @@ public class ClassesService {
 
     @Resource
     private AreaMapper areaMapper;
+    @Resource
+    private TeacherSchoolMapper teacherSchoolMapper;
 
     /**
      * 获取班级信息
@@ -105,7 +101,10 @@ public class ClassesService {
         Classes classes = new Classes();
         classes.setClassId(YitIdHelper.nextId());
         classes.setTeacherId(classesParams.getTeacherId());
-        classes.setSchoolId(classesParams.getSchoolId());
+        QueryWrapper<TeacherSchool> teacherSchoolQueryWrapper   =new QueryWrapper<>();
+        teacherSchoolQueryWrapper.eq("teacher_id",classesParams.getTeacherId());
+        TeacherSchool teacherSchool = teacherSchoolMapper.selectOne(teacherSchoolQueryWrapper);
+        classes.setSchoolId(teacherSchool.getSchoolId());
         classes.setClassName(classesParams.getClassName());
         classes.setGrade(classesParams.getGrade());
         int insert = classesMapper.insert(classes);

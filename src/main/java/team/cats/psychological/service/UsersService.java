@@ -42,10 +42,35 @@ public class UsersService {
 
 
     public List<Users> getTeacherArray() {
-        QueryWrapper<Users> queryWrapper = new QueryWrapper();
-        queryWrapper.eq("user_role", 4);
-        List<Users> users = usersMapper.selectList(queryWrapper);
-        return users;
+        List<Users> teachers = new ArrayList<>();
+        long userId = StpUtil.getLoginIdAsLong();
+        Users users = usersMapper.selectById(userId);
+        Long userRole = users.getUserRole();
+        if (userRole == 0) {
+            QueryWrapper<Users> queryWrapper = new QueryWrapper();
+            queryWrapper.eq("user_role", 4);
+            teachers = usersMapper.selectList(queryWrapper);
+        } else if (userRole == 1) {
+            QueryWrapper<Area> areaQueryWrapper = new QueryWrapper<>();
+            areaQueryWrapper.eq("area_principal", userId);
+            List<Area> areas = areaMapper.selectList(areaQueryWrapper);
+            for (Area area : areas) {
+                QueryWrapper<School> schoolQueryWrapper = new QueryWrapper<>();
+                schoolQueryWrapper.eq("area_id", area.getAreaId());
+                List<School> schools = schoolMapper.selectList(schoolQueryWrapper);
+                for (School school : schools) {
+                    QueryWrapper<TeacherSchool> teacherSchoolQueryWrapper = new QueryWrapper<>();
+                    teacherSchoolQueryWrapper.eq("school_id", school.getSchoolId());
+                    List<TeacherSchool> teacherSchools = teacherSchoolMapper.selectList(teacherSchoolQueryWrapper);
+                    for (TeacherSchool teacherSchool : teacherSchools) {
+                        Users users1 = usersMapper.selectById(teacherSchool.getTeacherId());
+                        teachers.add(users1);
+                    }
+                }
+            }
+        }
+
+        return teachers;
     }
     public Users getUserByPhone(String phone){
         QueryWrapper<Users> queryWrapper = new QueryWrapper();
