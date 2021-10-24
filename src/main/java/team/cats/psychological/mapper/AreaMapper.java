@@ -23,5 +23,5 @@ public interface AreaMapper extends BaseMapper<Area> {
     @Select("select distinct province_id,province_name from area")
     public List<Province> selectProvince();
 
-    public List<AreaAndUser> selectAreaUsers(@Param("value") String value,@Param("cityId") Long cityId,@Param("provinceId") Long provinceId);
+    public List<AreaAndUser> selectAreaUsers(@Param("value") String value,@Param("cityId") Long cityId,@Param("provinceId") Long provinceId,@Param("userId") Long userId);
 }

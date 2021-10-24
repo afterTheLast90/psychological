@@ -106,7 +106,8 @@ public class AreaService {
 
 
         PageHelper.startPage(basePageParam.getPageNum(),basePageParam.getPageSize());
-        List<AreaAndUser> areaAndUsers =areaMapper.selectAreaUsers(value,cityId,provinceId);
+        long userId = StpUtil.getLoginIdAsLong();
+        List<AreaAndUser> areaAndUsers =areaMapper.selectAreaUsers(value,cityId,provinceId,userId);
         for (AreaAndUser areaAndUser : areaAndUsers) {
             areaAndUser.setSchool(schoolMapper.selectByAreaId(areaAndUser.getAreaId()));
         }

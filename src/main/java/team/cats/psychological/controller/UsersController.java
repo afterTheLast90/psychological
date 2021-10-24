@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -109,6 +110,7 @@ public class UsersController {
 
     @PostMapping("/importStudent")
     @ApiModelProperty("导入学生")
+    @Transactional
     public R importStudent(@RequestBody ImportStudent importStudent) throws IOException {
 //        ExcelReader reader = ExcelUtil.getReader(importStudent.getFile().getInputStream(), 0);
         return R.successNoShow(usersService.importStudent(importStudent.getClassId(),
