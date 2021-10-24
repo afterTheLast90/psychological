@@ -19,7 +19,7 @@ public class RegisterParams {
     private String userName;
     @NotBlank(message = "账号不能为空")
     private String account;
-    @NotBlank(message = "性别不能为空")
+    @NotNull(message = "性别不能为空")
     private Integer userGender;
     @NotBlank(message = "密码不能为空")
     private String password;

@@ -1,11 +1,13 @@
 package team.cats.psychological.service;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.yitter.idgen.YitIdHelper;
 import lombok.val;
 import org.apache.catalina.User;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.cats.psychological.base.BaseException;
@@ -19,9 +21,13 @@ import team.cats.psychological.param.UserParams;
 import team.cats.psychological.vo.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class UsersService {
@@ -87,6 +93,16 @@ public class UsersService {
 
     @Transactional
     public void register(RegisterParams registerParams){
+        if (Validator.isMobile(registerParams.getAccount())){
+            throw new BaseException("账号不能为手机号");
+        }
+        if (!registerParams.getPassword().equals(registerParams.getRePassword())){
+            throw new BaseException("重复密码错误");
+        }
+        if (!Validator.isMobile(registerParams.getParentPhone())){
+            throw new BaseException("家长手机号错误");
+        }
+
         Users userByPhoneOrAccount = this.getUserByPhoneOrAccount(registerParams.getAccount());
         if (userByPhoneOrAccount!=null) {
             throw new BaseException("账号已存在");
@@ -99,7 +115,7 @@ public class UsersService {
         student.setState(0);
         student.setUserGender(registerParams.getUserGender().longValue());
         student.setDeleteFlag(false);
-        student.setUserBirthday(student.getUserBirthday());
+        student.setUserBirthday(registerParams.getUserBirthday());
         student.setUserRole(2L);
         student.setUserPhoneNumber("");
         usersMapper.insert(student);
@@ -445,5 +461,53 @@ public class UsersService {
 
     public Users getParent(Long parentId){
         return usersMapper.selectById(parentId);
+    }
+
+    public ImportFailedVo importStudent(Long classId, List<HashMap<String,Object>> data){
+        ImportFailedVo importFailedVo = new ImportFailedVo();
+        if (data.size()==0){
+            return importFailedVo;
+        }
+        ValidatorFactory vf = Validation.buildDefaultValidatorFactory();
+        javax.validation.Validator validator = vf.getValidator();
+
+        for (HashMap<String,Object>datum : data) {
+            RegisterParams registerParams = new RegisterParams();
+            registerParams.setUserName(datum.getOrDefault("姓名","").toString());
+            registerParams.setUserGender("男".equals(datum.getOrDefault("性别","男").toString())?1:0);
+            registerParams.setAccount(datum.getOrDefault("账号","").toString());
+            registerParams.setUserBirthday(LocalDateTime.parse(datum.getOrDefault("出生日期",
+                    "2000-01-01 00:00:00").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd " +
+                    "HH:mm:ss")).toLocalDate());
+            registerParams.setParentName(datum.getOrDefault("家长姓名","").toString());
+            registerParams.setParentPhone(datum.getOrDefault("家长手机号","").toString());
+            registerParams.setPassword(registerParams.getParentPhone());
+            registerParams.setRePassword(registerParams.getParentPhone());
+            registerParams.setClassId(classId);
+            Set<ConstraintViolation<RegisterParams>> set = validator.validate(registerParams);
+            System.out.println(set);
+
+            if (set.size()!=0){
+                ImportStudentFailedVo importStudentFailedVo = new ImportStudentFailedVo();
+                BeanUtils.copyProperties(registerParams,importStudentFailedVo);
+                for (ConstraintViolation<RegisterParams> registerParamsConstraintViolation : set) {
+                    importStudentFailedVo.setMsg(registerParamsConstraintViolation.getMessage());
+                    importFailedVo.getData().add(importStudentFailedVo);
+                    break;
+                }
+              continue;
+            }
+            try {
+                register(registerParams);
+            }catch (BaseException e){
+                ImportStudentFailedVo importStudentFailedVo = new ImportStudentFailedVo();
+                BeanUtils.copyProperties(registerParams,importStudentFailedVo);
+                importStudentFailedVo.setMsg(e.getMsg());
+                importFailedVo.getData().add(importStudentFailedVo);
+            }
+        }
+        importFailedVo.setSize(importFailedVo.getData().size());
+        importFailedVo.setTotal(data.size());
+        return importFailedVo;
     }
 }

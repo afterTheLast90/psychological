@@ -2,6 +2,8 @@ package team.cats.psychological.utils;
 
 import cn.dev33.satoken.stp.StpUtil;
 import java.net.URLEncoder;
+
+import cn.hutool.poi.excel.ExcelUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -47,5 +49,11 @@ public class UploadController {
             logger.error("上传图片失败->message:{}",e.getMessage());
             throw new BaseException("上传失败");
         }
+    }
+
+    @PostMapping("/parseExcel")
+    @ApiOperation("解析excel")
+    public R parseExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        return R.success(ExcelUtil.getReader(file.getInputStream(), 0).readAll());
     }
 }

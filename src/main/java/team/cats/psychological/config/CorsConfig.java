@@ -30,7 +30,10 @@ public class CorsConfig implements WebMvcConfigurer {
         // 注册Sa-Token的路由拦截器，并排除登录接口或其他可匿名访问的接口地址 (与注解拦截器无关)
         registry.addInterceptor(new SaRouteInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login","/upload/**","/LoginAdmin","/getSchoolListNoLogin","/loginForAdmin","/register","/upload/avatar","/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+                .excludePathPatterns("/upload/parseExcel","/login","/upload/**",
+                        "/LoginAdmin",
+                        "/getSchoolListNoLogin","/loginForAdmin","/register","/upload/avatar","/swagger-resources/**",
+                        "/webjars/**", "/v2/**", "/swagger-ui.html/**","/doc.html");
     }
 
 //    @Override
