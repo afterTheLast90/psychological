@@ -4,7 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="team.cats.psychological.mapper.AreaMapper">
     <select id="selectAreaUsers" resultType="team.cats.psychological.vo.AreaAndUser">
-        select area.*,users.user_name from area,users where area.delete_flag= false and area.area_principal = users.user_id and users.user_id=#{userId}
+        select area.*,users.user_name from area,users where area.delete_flag= false and area.area_principal = users.user_id
+        <if test="userId!=0">
+            and users.user_id=#{userId}
+        </if>
         <if test="value != null and value !=''">
             and area_name like concat('%',#{value},'%')
         </if>
