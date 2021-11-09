@@ -35,6 +35,7 @@ public class ClassesController {
     @PostMapping("/insertClasses")
     @ApiOperation("添加班级")
     public R InsertClasses(@Validated @RequestBody ClassesParams classesParams){
+        System.out.println(classesParams);
         classesService.insertClasses(classesParams);
         return R.success();
     }

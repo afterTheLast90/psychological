@@ -17,8 +17,6 @@ public class ReleaseParams {
     private Long id;
     @NotNull(message = "类型不能为空")
     private Integer publishType;
-    @NotEmpty
     private LocalDateTime releaseTime;
-    @NotEmpty
     private LocalDateTime deadLine;
 }

@@ -8,8 +8,6 @@ import team.cats.psychological.base.BaseException;
 import team.cats.psychological.base.BasePageParam;
 import team.cats.psychological.base.PageResult;
 import team.cats.psychological.base.R;
-import team.cats.psychological.entity.StudentsClass;
-import team.cats.psychological.mapper.StudentsClassMapper;
 import team.cats.psychological.param.UserParams;
 import team.cats.psychological.service.StudentsClassService;
 import team.cats.psychological.service.StudentsParentService;
@@ -83,6 +81,7 @@ public class StudentsController {
     @PostMapping("/modifyStudent")
     @ApiOperation("修改学生信息")
     public R modifyTeacher(@Validated @RequestBody UserParams userParams){
+        userParams.setUserPhoneNumber("");
         usersService.modifyAdministrator(userParams);
         return R.success();
     }

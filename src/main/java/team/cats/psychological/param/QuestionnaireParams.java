@@ -42,7 +42,7 @@ public class QuestionnaireParams {
     /**
      * 发布人ID
      */
-    @NotNull(message = "发布人不能为空")
+//    @NotNull(message = "发布人不能为空")
     private Long publisherId;
     /**
      * 创建者

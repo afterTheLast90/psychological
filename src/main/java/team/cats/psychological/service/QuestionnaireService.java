@@ -55,6 +55,13 @@ public class QuestionnaireService {
 
     public void DelQuestionnaire(Long id){
         questionnaireMapper.deleteById(id);
+        QueryWrapper<Publish> publishQueryWrapper=new QueryWrapper<>();
+        publishQueryWrapper.eq("questionnaire_id",id);
+        publishQueryWrapper.eq("state",0);
+        publishMapper.delete(publishQueryWrapper);
+        QueryWrapper<UserQuestionnaire> userQuestionnaireQueryWrapper = new QueryWrapper<>();
+        userQuestionnaireQueryWrapper.eq("questionnaire",id);
+//        userQuestionnaireMapper.
     }
 
     public void ModifyQuestionnaire(QuestionnaireParams questionnaireParams){

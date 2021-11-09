@@ -340,13 +340,22 @@ public class UsersService {
             int age = yearNow - yearBirth;   //计算整岁数
             if (monthNow <= monthBirth) {
                 if (monthNow == monthBirth) {
-                    if (dayOfMonthNow < dayOfMonthBirth) age--;//当前日期在生日之前，年龄减一
+                    if (dayOfMonthNow < dayOfMonthBirth) {
+                        age--;//当前日期在生日之前，年龄减一
+                    }
                 } else {
                     age--;//当前月份在生日之前，年龄减一
                 }
             }
             studentView.setAge(age);
         }
+        Collections.sort(studentViewList, new Comparator<StudentView>() {
+            @Override
+            public int compare(StudentView o1, StudentView o2) {
+                //升序
+                return o1.getState().compareTo(o2.getState());
+            }
+        });
 
         return new PageResult<StudentView>(studentViewList);
     }
