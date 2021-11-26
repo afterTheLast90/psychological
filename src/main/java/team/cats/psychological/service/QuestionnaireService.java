@@ -61,7 +61,11 @@ public class QuestionnaireService {
         publishMapper.delete(publishQueryWrapper);
         QueryWrapper<UserQuestionnaire> userQuestionnaireQueryWrapper = new QueryWrapper<>();
         userQuestionnaireQueryWrapper.eq("questionnaire",id);
-//        userQuestionnaireMapper.
+        userQuestionnaireMapper.delete(userQuestionnaireQueryWrapper);
+        QueryWrapper<QuestionnaireDetails> questionnaireDetailsQueryWrapper = new QueryWrapper<>();
+        questionnaireDetailsQueryWrapper.eq("questionnaire_id",id);
+        questionnaireDetailsMapper.delete(questionnaireDetailsQueryWrapper);
+
     }
 
     public void ModifyQuestionnaire(QuestionnaireParams questionnaireParams){
